@@ -1,0 +1,709 @@
+﻿@using SmartSkus.Core.Backup
+@using Microsoft.AspNetCore.Components.Authorization
+@using SmartSkus.Core.UI.Components.Admin
+@using SmartSkus.Core.UI.Utils
+@using System.Security.Claims
+@using SmartSkus.Shared.Enums
+@inject HitNtryAuthenticationStateProvider HitNtryAuthenticationStateProvider
+
+<PageTitle>Smart Sku's</PageTitle>
+
+<HeadContent>
+    @if (_bootswatchThemes.ContainsKey(Theme) && _workaround == 0)
+    {
+        <link rel="stylesheet" href="@($"https://cdn.jsdelivr.net/npm/bootswatch@5.1.3/dist/{Theme}/bootstrap.min.css")" integrity="@(_bootswatchThemes[Theme])" crossorigin="anonymous">
+    }
+    else if (_bootswatchThemes.ContainsKey(Theme) && _workaround == 1)
+    {
+        <link rel="stylesheet" href="@($"https://cdn.jsdelivr.net/npm/bootswatch@5.1.3/dist/{Theme}/bootstrap.min.css")" integrity="@(_bootswatchThemes[Theme])" crossorigin="anonymous">
+    }
+    else
+    {
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    }
+</HeadContent>
+
+<CascadingValue Value=Size>
+
+    <ErrorBoundary>
+        <ChildContent>
+
+            <Container Fluid=true Height=Height.Is100 Display=Display.Flex Flex=Flex.Column>
+
+                <Row Border=Border.Is1.OnTop.Dark>
+                    <Column Border=Border.Is1.OnBottom.Primary Display=Display.Flex>
+
+                        @if (Screen == Screen.Main)
+                        {
+                            <Button Class="shadow-none sidebar-toggle-visible" Color="Color.Primary" Outline="!_sidebarVisible" Size="Size" Margin=Margin.IsAuto.FromTop.IsAuto.FromBottom.Is2.FromEnd Padding=Padding.Is0.Is1.OnX @onclick="ToggleSidebar">
+                                <Icon Class="fa-fw" Name="IconName.Bars" />
+                            </Button>
+                        }
+
+                        <Button Class="shadow-none" Color="Color.Primary" Outline="Screen != Screen.Options" Size="Size" Margin=Margin.IsAuto.FromTop.IsAuto.FromBottom.Is2.FromEnd Padding=Padding.Is0.Is1.OnX @onclick="ToggleOptions">
+                            <Icon Class="fa-fw" Name="IconName.Wrench" />
+                        </Button>
+
+                        @if (_showDebugControls && IsDebug)
+                        {
+                            <Button Class="shadow-none" Color="Color.Primary" Outline="true" Size="Size" Margin=Margin.IsAuto.FromTop.IsAuto.FromBottom.Is2.FromEnd Padding=Padding.Is0.Is1.OnX @onclick="DebugTheme">
+                                <Icon Class="fa-fw" Name="IconName.Bug" /> @Theme
+                            </Button>
+
+                            <Button Class="shadow-none" Color="Color.Primary" Outline="true" Size="Size" Margin=Margin.IsAuto.FromTop.IsAuto.FromBottom.Is2.FromEnd Padding=Padding.Is0.Is1.OnX @onclick="DebugBackground">
+                                <Icon Class="fa-fw" Name="IconName.Bug" /> @_background.Name
+                            </Button>
+
+                            <Button Class="shadow-none" Color="Color.Primary" Outline="true" Size="Size" Margin=Margin.IsAuto.FromTop.IsAuto.FromBottom.Is2.FromEnd Padding=Padding.Is0.Is1.OnX @onclick="ToggleQrCodeTester">
+                                <Icon Class="fa-fw" Name="IconName.Print" /> QR Tester
+                            </Button>
+                        }
+
+                        <AuthorizeView>
+
+                            <Authorized>
+
+                                <Button Class="shadow-none" Size="Size" Margin=Margin.IsAuto.FromTop.IsAuto.FromBottom.Is2.FromEnd Padding=Padding.Is0.Is1.OnX @onclick="ShowMainScreen">
+                                    <Span>User: @HitNtryAuthenticationStateProvider.Username</Span>
+                                </Button>
+
+                                <Button Class="shadow-none" Color="Color.Primary" Outline="true" Size="Size" Margin=Margin.IsAuto.FromTop.IsAuto.FromBottom.Is2.FromEnd Padding=Padding.Is0.Is1.OnX @onclick="ShowLogout">
+                                    <Icon Class="fa-fw" Name="IconName.LockOpen" /> @Localizer["Logout"]
+                                </Button>
+
+                            </Authorized>
+
+                            <Authorizing>
+                                <div>Loading...</div>
+                            </Authorizing>
+
+                            <NotAuthorized>
+
+                                <Button Class="shadow-none" Color="Color.Primary" Outline="true" Size="Size" Margin=Margin.IsAuto.FromTop.IsAuto.FromBottom.Is2.FromEnd Padding=Padding.Is0.Is1.OnX @onclick="ShowModal">
+                                    <Icon Class="fa-fw" Name="IconName.Lock" /> @Localizer["Login"]
+                                </Button>
+
+                            </NotAuthorized>
+
+                        </AuthorizeView>
+
+                        <Button Class="shadow-none" Size="Size" Margin=Margin.IsAuto.FromTop.IsAuto.FromBottom.Is2.FromEnd Padding=Padding.Is0.Is1.OnX @onclick="ShowMainScreen">
+                            <Span style="font-family: 'Caveat', cursive; font-size: 1.5em;">Smart Sku's</Span>
+                        </Button>
+
+                        @if (IsPersonalComputer)
+                        {
+                            <Inline Margin=Margin.IsAuto.FromStart>
+                                <Addons Size=Size.Small Margin=Margin.IsAuto.FromTop.IsAuto.FromBottom Padding=Padding.Is0>
+                                    <Addon AddonType="AddonType.Start">
+                                        <Button Color="Color.Primary" Outline="UnsavedChanges" Size="Size" @onclick="Backup">
+                                            <Icon Class="fa-fw" Name="IconName.Save" />
+                                        </Button>
+                                    </Addon>
+
+                                    @if (IsApple)
+                                    {
+                                        <select class="form-select" value="@Settings.SelectedBackupFormat" @onchange="OnDataFormatChangeEvent">
+                                            @foreach (DataFormat dataFormat in ImportExport.DataExportByFormat.Keys)
+                                            {
+                                                <option value="@dataFormat">@Localizer[dataFormat.GetDescription()]</option>
+                                            }
+                                        </select>
+                                    }
+                                    else
+                                    {
+                                        <Select TValue="DataFormat" Size="Size.Small" SelectedValue="Settings.SelectedBackupFormat" SelectedValueChanged="OnDataFormatChanged">
+                                            @foreach (DataFormat dataFormat in ImportExport.DataExportByFormat.Keys)
+                                            {
+                                                <SelectItem Value="dataFormat">@Localizer[dataFormat.GetDescription()]</SelectItem>
+                                            }
+                                        </Select>
+                                    }
+                                </Addons>
+                            </Inline>
+                        }
+
+                    </Column>
+                </Row>
+
+                @if (Screen == Screen.Options)
+                {
+                    <Row Background=_background Flex=Flex.Grow.Is1 Overflow=Overflow.Auto Display=Display.Block Height=Height.Max100>
+
+                        <Div Display=Display.Flex>
+                            <h4 class="d-inline-block">@Localizer["Options"]</h4>
+                            <Button Class="shadow-none" Margin=Margin.Is0.OnY.IsAuto.FromStart Padding=Padding.Is0 @onclick="ShowMainScreen">
+                                <Icon Class="fa-fw" Name="IconName.Times" />
+                            </Button>
+                        </Div>
+
+                        <OptionsComponent @bind-SelectedCategory=_appModelObject
+                                      Size="Size" SizeChanged="OnSizeChanged"
+                                      Themes="_bootswatchThemes.Keys" Theme="@Theme" ThemeChanged="OnThemeChanged"
+                                      Backgrounds="_backgrounds.Keys" Background="@Repository.Settings.Background" BackgroundChanged="OnBackgroundChanged"
+                                      LanguageChanged="() => StateHasChanged()" />
+
+                        @if (IsDebug)
+                        {
+                            <Card Margin=Margin.Is0.OnMobile.Is2.OnDesktop Padding=Padding.Is0 Style="max-width: 414px">
+                                <CardBody Padding=Padding.Is1>
+
+                                    <CheckBox Checked="_showDebugControls" CheckedChanged="OnShowDebugChanged">@Localizer["Show debug controls"]</CheckBox>
+
+                                </CardBody>
+                            </Card>
+                        }
+
+                    </Row>
+                }
+                else if (Screen == Screen.Inventory)
+                {
+                    <Row Background=_background Flex=Flex.Grow.Is1 Overflow=Overflow.Auto Display=Display.Block Height=Height.Max100>
+                        <CascadingValue Value="this">
+                            <SkusInventoryComponent @bind-AppModelObject=_appModelObject />
+                        </CascadingValue>
+                    </Row>
+                }
+                else if (Screen == Screen.SkuCategory)
+                {
+                    <Row Background=_background Flex=Flex.Grow.Is1 Overflow=Overflow.Auto Display=Display.Block Height=Height.Max100>
+                        <SkusCategoryComponent />
+                    </Row>
+                }
+                else if (Screen == Screen.SkuOptions)
+                {
+                    <Row Background=_background Flex=Flex.Grow.Is1 Overflow=Overflow.Auto Display=Display.Block Height=Height.Max100>
+                        <SkusOptionsComponent />
+                    </Row>
+                }
+                else if (Screen == Screen.AdminSettings)
+                {
+                    <Row Background=_background Flex=Flex.Grow.Is1 Overflow=Overflow.Auto Display=Display.Block Height=Height.Max100>
+                        <SettingsComponent />
+                    </Row>
+                }
+                else if (Screen == Screen.Help)
+                {
+                    <Row Background=_background Flex=Flex.Grow.Is1 Overflow=Overflow.Auto Display=Display.Block Height=Height.Max100>
+                        <HelpComponent />
+                    </Row>
+                }
+                else if (Screen == Screen.About)
+                {
+                    <Row Background=_background Flex=Flex.Grow.Is1 Overflow=Overflow.Auto Display=Display.Block Height=Height.Max100>
+                        <AboutComponent />
+                    </Row>
+                }
+                else if (Screen == Screen.QrCodeTester)
+                {
+                    <Row Background=_background Flex=Flex.Grow.Is1 Overflow=Overflow.Auto Display=Display.Block Height=Height.Max100>
+                        <QrCode />
+                    </Row>
+                }
+                else
+                {
+                    <Row Background=_background Flex=Flex.Grow.Is1 class="parent-row">
+
+                        <Column ColumnSize=ColumnSize.Is12.OnMobile.Is3.OnDesktop Padding=Padding.Is0 class="@($"child-column {SidebarVisibilityCss}")" style="min-width: 320px">
+
+                            <Accordion Margin=Margin.Is0.OnMobile.Is2.OnDesktop>
+
+                                <Collapse Visible="@_inventoryVisible">
+
+                                    <CollapseHeader Padding=Padding.Is0>
+                                        <Button Size=Size.Small Block=true Padding=Padding.Is1.OnY.Is2.OnX
+                                            @onclick="@(() => _inventoryVisible = !_inventoryVisible)">
+                                            @Localizer["Inventory Management"]
+                                        </Button>
+                                    </CollapseHeader>
+
+                                    <CollapseBody Padding=Padding.Is0>
+                                        <AddInventoryComponent @bind-AppModelObject=_appModelObject Settings=Settings />
+                                    </CollapseBody>
+
+                                </Collapse>
+
+                                <Collapse Visible="@_bulkSkuNewVisible">
+
+                                    <CollapseHeader Padding=Padding.Is0>
+                                        <Button Size=Size.Small Block=true Padding=Padding.Is1.OnY.Is2.OnX
+                                            @onclick="@(() => _bulkSkuNewVisible = !_bulkSkuNewVisible)">
+                                            @Localizer["SKU Management - Manual Add"]
+                                        </Button>
+                                    </CollapseHeader>
+
+                                    <CollapseBody Padding=Padding.Is0>
+                                        <AddSkuManualComponent @bind-AppModelObject=_appModelObject Settings=Settings />
+                                    </CollapseBody>
+
+                                </Collapse>
+
+                                <Collapse Visible="@_bulkSkuVisible">
+
+                                    <CollapseHeader Padding=Padding.Is0>
+                                        <Button Size=Size.Small Block=true Padding=Padding.Is1.OnY.Is2.OnX
+                                            @onclick="@(() => _bulkSkuVisible = !_bulkSkuVisible)">
+                                            @Localizer["SKU Management - Bulk Add"]
+                                        </Button>
+                                    </CollapseHeader>
+
+                                    <CollapseBody Padding=Padding.Is0>
+                                        <AddBulkSkuComponent @bind-AppModelObject=_appModelObject Settings=Settings />
+                                    </CollapseBody>
+
+                                </Collapse>
+
+                                @if (_appModelObject.ItemDtoList.Count() == 0)
+                                {
+                                    <p><em>Loading...</em></p>
+                                }
+                                else
+                                {
+                                    <Collapse Visible="@_availableItemsVisible">
+
+                                        <CollapseHeader Padding=Padding.Is0>
+
+                                            <Button Size=Size.Small Block=true Padding=Padding.Is1.OnY.Is2.OnX @onclick="@(() => _availableItemsVisible = !_availableItemsVisible)">@Localizer["Available Categories"]</Button>
+
+                                        </CollapseHeader>
+
+                                        <CollapseBody Padding=Padding.Is0>
+                                            <AvailableItemsComponent @bind-AppModelObject=_appModelObject Settings=Settings />
+                                        </CollapseBody>
+                                    </Collapse>
+                                }
+
+                            </Accordion>
+
+                        </Column>
+
+                        <Column Padding=Padding.Is0 class="child-column">
+
+                            @if(_inventoryVisible == true)
+                            {
+                                @if (_appModelObject.SelectedSkuModelDtoList == null)
+                                {
+                                    <p><em>Loading...</em></p>
+                                }
+                                else
+                                {
+                                    <div class="m-1 m-md-0" _bl_86="">
+                                        <!--!-->
+                                        <button id="0HMRJL47CADMG_CurrentInventoryList" type="button" class="btn btn-primary btn-block" _bl_87="">Inventory List</button>
+                                    </div>
+
+                                    <Table>
+
+                                        <TableHeader>
+                                            <TableRow>
+
+                                                <TableHeaderCell>Id</TableHeaderCell>
+                                                <TableHeaderCell>SKU</TableHeaderCell>
+                                                <TableHeaderCell>Description</TableHeaderCell>
+                                                <TableHeaderCell>Quantity</TableHeaderCell>
+                                                <TableHeaderCell>QR Code</TableHeaderCell>
+
+                                            </TableRow>
+                                        </TableHeader>
+
+                                        <TableBody>
+                                            @foreach (var sku in _appModelObject.SelectedSkuModelDtoList)
+                                            {
+
+                                                var QRCodeStr = GenerateQRCode.GenerateQR(@sku.GenerateSku);
+                                                <TableRow>
+
+                                                    <TableRowCell>@sku.Id</TableRowCell>
+                                                    <TableRowCell>@sku.GenerateSku</TableRowCell>
+                                                    <TableRowCell>@sku.Description</TableRowCell>
+                                                    <TableRowCell>@sku.Quantity</TableRowCell>
+                                                    <TableRowCell>
+                                                        @if (!string.IsNullOrEmpty(QRCodeStr))
+                                                        {
+                                                            <img width="60" height="60" src="@QRCodeStr" />
+                                                        }
+                                                    </TableRowCell>
+
+                                                </TableRow>
+                                            }
+                                        </TableBody>
+
+                                    </Table>
+
+                                }
+                            }
+
+                            @if((_bulkSkuVisible == true) || (_bulkSkuNewVisible == true))
+                            {
+
+                                @if (_appModelObject.SelectedItemDtoList == null)
+                                {
+                                    <p><em>Loading...</em></p>
+                                }
+                                else
+                                {
+                                    <div class="m-1 m-md-0" _bl_86="">
+                                        <!--!-->
+                                        <button id="0HMRJL47CADMG_CurrentItemsList" type="button" class="btn btn-primary btn-block" _bl_87="">Items List</button>
+                                    </div>
+
+                                    <Table>
+
+                                        <TableHeader>
+                                            <TableRow>
+
+                                                <TableHeaderCell>Item Id</TableHeaderCell>
+                                                <TableHeaderCell>Item Code</TableHeaderCell>
+                                                <TableHeaderCell>Name</TableHeaderCell>
+                                                <TableHeaderCell>Description</TableHeaderCell>
+                                                @*<TableHeaderCell>Region</TableHeaderCell>*@
+                                                @*<TableHeaderCell>Category Id</TableHeaderCell>*@
+                                            </TableRow>
+                                        </TableHeader>
+
+                                        <TableBody>
+                                            @foreach (var item in _appModelObject.SelectedItemDtoList)
+                                            {
+                                                <TableRow>
+
+                                                    <TableRowCell>@item.ItemID</TableRowCell>
+                                                    <TableRowCell>@item.ItemCode</TableRowCell>
+                                                    <TableRowCell>@item.Name</TableRowCell>
+                                                    <TableRowCell>@item.Description</TableRowCell>
+                                                    @*<TableRowCell>@item.Region</TableRowCell>*@
+                                                    @*<TableRowCell>@item.CategoryID</TableRowCell>*@
+                                                </TableRow>
+                                            }
+                                        </TableBody>
+
+                                    </Table>
+
+                                }
+                            }
+
+                            @if (_bulkSkuVisible == true)
+                            {
+                                @if (_appModelObject.SelectedItemVariationDtoList == null)
+                                {
+                                    <p><em>Loading...</em></p>
+                                }
+                                else
+                                {
+                                    <div class="m-1 m-md-0" _bl_86="">
+                                        <!--!-->
+                                        <button id="0HMRJL47CADMG_CurrentItemVariationsList" type="button" class="btn btn-primary btn-block" _bl_87="">Variations List</button>
+                                    </div>
+
+                                    <Table>
+
+                                        <TableHeader>
+                                            <TableRow>
+
+                                                <TableHeaderCell>Variation Id</TableHeaderCell>
+                                                <TableHeaderCell>Sku Nmumber</TableHeaderCell>
+                                                <TableHeaderCell>Description</TableHeaderCell>
+                                                @*<TableHeaderCell>Price</TableHeaderCell>*@
+                                                @*<TableHeaderCell>Quantity</TableHeaderCell>*@
+                                                <TableHeaderCell>Item Id</TableHeaderCell>
+                                            </TableRow>
+                                        </TableHeader>
+
+                                        <TableBody>
+                                            @foreach (var v in _appModelObject.SelectedItemVariationDtoList)
+                                            {
+                                                <TableRow>
+
+                                                    <TableRowCell>@v.ItemVariationID</TableRowCell>
+                                                    <TableRowCell>@v.SKUNumber</TableRowCell>
+                                                    <TableRowCell>@v.Description</TableRowCell>
+                                                    @*<TableRowCell>@v.Price</TableRowCell>*@
+                                                    @*<TableRowCell>@v.Quantity</TableRowCell>*@
+                                                    <TableRowCell>@v.ItemID</TableRowCell>
+                                                </TableRow>
+                                            }
+                                        </TableBody>
+
+                                    </Table>
+
+                                }
+                            }
+
+                            @if ((_bulkSkuVisible == true) || (_bulkSkuNewVisible == true))
+                            {
+                                @if (_appModelObject.SelectedSkuModelDtoList == null)
+                                {
+                                    <p><em>Loading...</em></p>
+                                }
+                                else
+                                {
+                                    <div class="m-1 m-md-0" _bl_86="">
+                                        <!--!-->
+                                        <button id="0HMRJL47CADMG_CurrentSkuModelList" type="button" class="btn btn-primary btn-block" _bl_87="">View All Inventory</button>
+                                    </div>
+
+                                    <Table>
+
+                                        <TableHeader>
+                                            <TableRow>
+
+                                                <TableHeaderCell>Id</TableHeaderCell>
+                                                <TableHeaderCell>ItemName</TableHeaderCell>
+                                                <TableHeaderCell>Attribute 1</TableHeaderCell>
+                                                <TableHeaderCell>Attribute 2</TableHeaderCell>
+                                                <TableHeaderCell>Attribute 3</TableHeaderCell>
+                                                <TableHeaderCell>Description</TableHeaderCell>
+                                                <TableHeaderCell>Quantity</TableHeaderCell>
+                                                <TableHeaderCell>Generated SKU</TableHeaderCell>
+                                                <TableHeaderCell>QR Code</TableHeaderCell>
+                                            </TableRow>
+                                        </TableHeader>
+
+                                        <TableBody>
+                                            @foreach (var sku in _appModelObject.SelectedSkuModelDtoList)
+                                            {
+
+                                                var QRCodeStr = GenerateQRCode.GenerateQR(@sku.GenerateSku);
+                                                <TableRow>
+
+                                                    <TableRowCell>@sku.Id</TableRowCell>
+                                                    <TableRowCell>@sku.ItemName</TableRowCell>
+                                                    <TableRowCell>@sku.Attribute1</TableRowCell>
+                                                    <TableRowCell>@sku.Attribute2</TableRowCell>
+                                                    <TableRowCell>@sku.Attribute3</TableRowCell>
+                                                    <TableHeaderCell>@sku.Description</TableHeaderCell>
+                                                    <TableHeaderCell>@sku.Quantity</TableHeaderCell>
+                                                    <TableRowCell>@sku.GenerateSku</TableRowCell>
+                                                    <TableRowCell>
+                                                        @if (!string.IsNullOrEmpty(QRCodeStr))
+                                                        {
+                                                            <img width="60" height="60" src="@QRCodeStr" />
+                                                        }
+                                                    </TableRowCell>
+                                                </TableRow>
+                                            }
+                                        </TableBody>
+
+                                    </Table>
+
+                                }
+                            }
+
+                        </Column>
+
+                    </Row>
+                }
+
+                <Row>
+                    <Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+
+                        <Button Class="shadow-none" Color="Color.Primary" Outline="Screen != Screen.Help" Size="Size" Margin=Margin.Is1.OnY Padding=Padding.Is0.Is1.OnX @onclick="ToggleHelp">
+                            <Icon Class="fa-fw" Name="IconName.QuestionCircle" />
+                        </Button>
+
+                        <AuthorizeView>
+
+                            <Authorized>
+
+                                <Button Class="shadow-none" Color="Color.Primary" Outline="Screen != Screen.Inventory" Size="Size" Margin=Margin.Is1.OnY.IsAuto.FromStart Padding=Padding.Is0.Is1.OnX @onclick="ToggleInventory">
+                                    <Icon Class="fa-fw" Name="IconName.ListOl" /> @Localizer["Inventory"]
+                                </Button>
+                                <Button Class="shadow-none" Color="Color.Primary" Outline="Screen != Screen.SkuCategory" Size="Size" Margin=Margin.Is1.OnY.IsAuto.FromStart Padding=Padding.Is0.Is1.OnX @onclick="ToggleSkuCategory">
+                                    <Icon Class="fa-fw" Name="IconName.CalendarCheck" />  @Localizer["SkuCategory"]
+                                </Button>
+                                <Button Class="shadow-none" Color="Color.Primary" Outline="Screen != Screen.SkuOptions" Size="Size" Margin=Margin.Is1.OnY.IsAuto.FromStart Padding=Padding.Is0.Is1.OnX @onclick="ToggleSkuOptions">
+                                    <Icon Class="fa-fw" Name="IconName.TicketAlt" /> @Localizer["SkuOptions"]
+                                </Button>
+                                <Button Class="shadow-none" Color="Color.Primary" Outline="Screen != Screen.AdminSettings" Size="Size" Margin=Margin.Is1.OnY.IsAuto.FromStart Padding=Padding.Is0.Is1.OnX @onclick="ToggleAdminSettings">
+                                    <Icon Class="fa-fw" Name="IconName.Briefcase" /> @Localizer["Settings"]
+                                </Button>
+
+                            </Authorized>
+
+                        </AuthorizeView>
+
+                        <Button Class="shadow-none" Color="Color.Primary" Outline="Screen != Screen.About" Size="Size" Margin=Margin.Is1.OnY.IsAuto.FromStart Padding=Padding.Is0.Is1.OnX @onclick="ToggleAbout">
+                            <Icon Class="fa-fw" Name="IconName.InfoCircle" />
+                        </Button>
+
+                    </Column>
+                </Row>
+
+            </Container>
+
+        </ChildContent>
+        <ErrorContent Context="ex">
+            <p>@ex.Message</p>
+        </ErrorContent>
+    </ErrorBoundary>
+
+</CascadingValue>
+
+<MessageProvider />
+
+@*
+    https://getbootstrap.com/docs/4.3/layout/grid/
+    Containers provide a means to center and horizontally pad your site’s contents. Use .container for a responsive pixel width or .container-fluid for width: 100% across all viewport and device sizes.
+    In a grid layout, content must be placed within columns and only columns may be immediate children of rows.
+
+    https://getbootstrap.com/docs/4.3/utilities/flex/
+
+    https://getbootstrap.com/docs/4.3/utilities/borders/
+
+    https://getbootstrap.com/docs/4.3/utilities/sizing/
+
+    https://getbootstrap.com/docs/4.3/utilities/overflow/
+
+    https://blazorise.com/docs/components/grid
+
+    https://blazorise.com/docs/helpers/utilities
+
+    https://bootstrapdemo.blazorise.com/tests/utilities/sizing
+
+    flex-column
+        flex-direction: column!important;
+        - if missing, all child nodes are in a row
+    d-flex
+        display: flex!important;
+        - if missing, whole page scrolls, including header and footer
+    h-100
+        height: 100%!important;
+        - if missing, whole page scrolls, including header and footer
+    container-fluid
+        - if missing, page width is not 100% and horizontal scrollbar is visible
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+
+    flex-shrink-0
+        - if missing, ???
+        flex-shrink: 0!important;
+    row
+        - if missing, header and footer have 15px margin
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+
+    col-12
+        - if missing, header and footer don't have 100% width
+        position: relative;
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+
+        flex: 0 0 100%;
+        max-width: 100%;
+*@
+
+@*
+    row
+        - if missing, the second column is not visible
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+
+    flex-grow-1
+       - if missing, and content is not 100% height, footer will not be at the bottom
+       flex-grow: 1!important;
+
+    overflow-hidden
+       - if missing, whole page scrolls, including header and footer
+       overflow: hidden!important;
+
+    col
+       - if missing, column is minimum width
+       position: relative;
+       width: 100%;
+       padding-right: 15px;
+       padding-left: 15px;
+
+       flex-basis: 0;
+       flex-grow: 1;
+       max-width: 100%;
+
+    mh-100
+       - if missing, height is over 100%, but not scrollable
+       max-height: 100%!important;
+
+    overflow-auto
+       - if missing, no vertical scrollbar
+       overflow: auto!important;
+*@
+
+
+<Modal @ref="modalRef">
+    <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Smart Sku's - @Localizer["Login"]</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel>Email</FieldLabel>
+                <TextEdit @bind-Text="@name" Placeholder="Enter email..." />
+            </Field>
+            <Field>
+                <FieldLabel>Password</FieldLabel>
+                <TextEdit Placeholder="Enter password..." />
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">@Localizer["Cancel"]</Button>
+            <Button Color="Color.Primary" Clicked="@LoginAndHideModal">@Localizer["Login"]</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+    // reference to the modal component
+    private Modal modalRef;
+
+    string name;
+
+    private Task ShowModal()
+    {
+        return modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        string str = name;
+
+        return modalRef.Hide();
+    }
+
+    private Task LoginAndHideModal()
+    {
+        string str = name;
+
+        HitNtryAuthenticationStateProvider.LoginAsync();
+
+        return modalRef.Hide();
+    }
+
+    public async Task ShowLogout()
+    {
+        HitNtryAuthenticationStateProvider.Logout();
+
+         Repository.Settings.Screen = Screen.Main;
+        await Repository.UpdateSettings(Repository.Settings.Id);
+    }
+}
+
+@code {
+
+    [Parameter]
+    public string? Module { get; set; }
+
+    [Parameter]
+    public string? Page { get; set; }
+
+    [Parameter]
+    public string? Action { get; set; }
+
+    [Parameter]
+    public int? Id { get; set; }
+}

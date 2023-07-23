@@ -1,0 +1,55 @@
+﻿@*@page "/about"*@
+
+<Div Display=Display.Flex>
+    <h4 class="d-inline-block">@Localizer["About"]</h4>
+    <Button Class="shadow-none" Margin=Margin.Is0.OnY.IsAuto.FromStart Padding=Padding.Is0 @onclick="ShowMainScreen">
+        <Icon Class="fa-fw" Name="IconName.Times" />
+    </Button>
+</Div>
+
+<h5><span style="font-family: 'Caveat', cursive; font-size: 1.5em;">Smart Sku's</span> - @Localizer["Automatic Stock Keeping Unit (SKU) generator"]:</h5>
+<ul>
+    @*    <li><span style="font-family: 'Caveat', cursive; font-size: 1.5em;">Smart Sku's</span> is used to genearte SKU, a unique identifier for a product, typically assigned by a retailer or manufacturer.</li>*@
+
+    <li>Unlike many other SKU generators, <span style="font-family: 'Caveat', cursive; font-size: 1.5em;">Smart Sku's</span> support both manual and automatic SKU generation.</li>
+    <li>It is used to track inventory and is typically associated with a product's QrCode.</li>
+    <li>That means that you need not to manually add or update SKU's.</li>
+
+    <li>Instead, <span style="font-family: 'Caveat', cursive; font-size: 1.5em;">Smart Sku's</span> &nbsp; takes few input variations (like for T-Shirt - Small, Medium, Large) and creates all possible SKU's automatically.</li>
+    <li>You can immediately see how many items you have in inventory and manage or Print SKU lables.</li>
+</ul>
+
+<h6><a href="https://github.com/avanisoam/SmartSkus.Core" target="_blank"><span class="fab fa-github"></span><Span Margin=Margin.Is1.FromStart><span style="font-family: 'Caveat', cursive; font-size: 1.5em;">Smart Sku's</span> on GitHub</Span></a></h6>
+
+<h5>Features</h5>
+
+<h6>Inventory Management - Dashboard will display all items in Inventory with Sku, Description and quantity:</h6>
+<ul>
+    <li>User can add new item in inventory by providing SKU, Description and Quantity.</li>
+    <li>If user adds unknown SKU, it will create new item in inventory.</li>
+    <li>If user adds known SKU, it will add the quantity to existing item in inventory.</li>
+    <li>If user adds negetive quantity with known SKU, it will substract the quantity to existing item in inventory.</li>
+</ul>
+
+<h6>SKU Management - Dashboard displays all unique Sku's in inventory and their variations:</h6>
+<ul>
+    <li>User can manually add new Skus by specifying one or more attributes.</li>
+    <li>User can add bulk Skus by specifying item code and selecting preconfigured variations.</li>
+</ul>
+
+<h6>Admin Panel - After Login user can manage Master Data:</h6>
+<ul>
+    <li>Admin User can manage(perform CRUD operations) items in Inventory.</li>
+    <li>Admin User can divide the items in inventory by adding different Categories.(e.g - Apperals, Electronics etc.)</li>
+    <li>For Each defined category different sub-options, can be added.(e.g - T-Shirt(Item Name), Apperal(Category), Size(Option Key), Small,Medium,Large(Option Values).</li>
+    <li>Admin User can manage(perform CRUD operations) all categories and sub options.</li>
+</ul>
+
+<h5>Formats</h5>
+<h6>File import/export:</h6>
+<ul>
+    <li>JSON import/export</li>
+    <li>YAML import/export</li>
+</ul>
+
+<span>&#169; 2023</span>

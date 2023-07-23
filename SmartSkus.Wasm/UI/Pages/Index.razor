@@ -1,0 +1,23 @@
+﻿@page "/{Module?}/{Page?}/{Action?}/{Id:int?}"
+
+@using Blazorise
+@using SmartSkus.Core.UI.Components
+
+<MainComponent Module="@Module" Page="@Page" Action="@Action" Id="@Id">
+
+</MainComponent>
+
+@code {
+
+    [Parameter]
+    public string? Module { get; set; }
+
+    [Parameter]
+    public string? Page { get; set; }
+
+    [Parameter]
+    public string? Action { get; set; }
+
+    [Parameter]
+    public int? Id { get; set; }
+}

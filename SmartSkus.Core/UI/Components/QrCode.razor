@@ -1,0 +1,36 @@
+﻿@page "/qrCode"
+
+<h3>QrCode</h3>
+
+<div class="form-control">
+    <label>Enter Text</label>
+    <input type="text" @bind-value="qrContent" />
+    <button type="button" class="btn-block" @onclick="GenerateQr">Generate QRCode</button>
+</div>
+
+@if (!string.IsNullOrEmpty(QRCodeStr))
+{
+    <Container Fluid=true Height=Height.Is100 Display=Display.Flex Flex=Flex.Column>
+
+        <Row Border=Border.Is1.OnTop.Dark>
+            <Column Border=Border.Is1.OnBottom.Primary Display=Display.Flex>
+
+                <img width="100" height="100" src="@QRCodeStr" />
+
+            </Column>
+        </Row>
+    </Container>
+}
+
+@code {
+
+    string qrContent = "";
+    string QRCodeStr = string.Empty;
+
+    private void GenerateQr()
+    {
+        QRCodeStr = GenerateQRCode.GenerateQR(qrContent);
+        //qrContent = string.Empty;
+    }
+
+}

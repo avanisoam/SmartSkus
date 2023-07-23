@@ -1,0 +1,8 @@
+.vs
+.vscode
+bin
+obj
+*.user
+credentials.json
+GoogleDriveService.GoogleClientSecrets.cs
+*.keystore

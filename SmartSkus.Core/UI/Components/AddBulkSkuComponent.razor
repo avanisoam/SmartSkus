@@ -1,0 +1,183 @@
+﻿@using SmartSkus.Core.Local.Models;
+@using SmartSkus.Shared.Dtos;
+
+<Validations @ref="validations" Mode="ValidationMode.Manual">
+    <Validation Validator="@ValidationRule.IsNotEmpty">
+        <Field Margin=Margin.Is0.Is2.FromTop>
+            <FieldLabel Margin=Margin.Is0>@Localizer["Item Name"]:</FieldLabel>
+            <TextEdit @bind-Text="@AppModelObject.BulkAddDtoObject.SKU">
+                <Feedback>
+                    <ValidationError>Item Name is Required</ValidationError>
+                </Feedback>
+            </TextEdit>
+        </Field>
+    </Validation>
+
+    <Validation Validator="@ValidationRule.IsNotEmpty">
+        <Field>
+            <FieldLabel Margin=Margin.Is0>@Localizer["Description"]:</FieldLabel>
+            <TextEdit @bind-Text="@AppModelObject.BulkAddDtoObject.Description">
+                <Feedback>
+                    <ValidationError>Description is Required</ValidationError>
+                </Feedback>
+            </TextEdit>
+        </Field>
+    </Validation>
+
+    <Validation Validator="ValidateQuantity">
+        <Field>
+            <FieldLabel Margin=Margin.Is0>@Localizer["Quantity"]:</FieldLabel>
+            <NumericEdit @bind-Value="@AppModelObject.BulkAddDtoObject.Quantity">
+                <Feedback>
+                    <ValidationError>Quantity is Required</ValidationError>
+                </Feedback>
+            </NumericEdit>
+        </Field>
+    </Validation>
+
+    <FieldLabel Margin=Margin.Is0>@Localizer["Category"]:</FieldLabel>
+
+    @if (Categories == null)
+    {
+        <p>
+            <em>Loading ...</em>
+        </p>
+    }
+    else
+    {
+        <Select TValue="int" SelectedValue="@selectedValue" SelectedValueChanged="@OnSelectedValueChanged">
+            <SelectItem selected="0">(Choose Category)</SelectItem>
+            @foreach (var cat in Categories)
+            {
+                <SelectItem value="@cat.CategoryID">@cat.Title</SelectItem>
+            }
+        </Select>
+    }
+
+    @code
+    {
+        private bool HideLabel { get; set; } = true;
+        int selectedValue;
+
+        Task OnSelectedValueChanged(int value)
+        {
+        selectedValue = value;
+        Console.WriteLine(selectedValue);
+
+        CategoryID = value;
+
+        AppModelObject.BulkAddDtoObject.CategoryId = CategoryID;
+
+        OptionKeys = (from cok in CategoryOptionKeys
+        .Where(s => s.CategoryID == CategoryID)
+                      select cok.OptionKey).ToList();
+
+        ////for serialization
+        string serializedOptionKey = System.Text.Json.JsonSerializer.Serialize(OptionKeys);
+        ////for deserialization
+        ////User userCopy = System.Text.Json.JsonSerializer.Deserialize<User>(serializedString);
+
+        Console.WriteLine(serializedOptionKey);
+        Console.WriteLine(" - It is definitely: " + value.ToString());
+
+        CheckCustomValidations();
+
+        return Task.CompletedTask;
+        }
+    }
+
+    @if (OptionKeys.Count() > 0)
+    {
+        <br />
+
+        <FieldLabel Margin=Margin.Is0>@Localizer["Options"]:</FieldLabel>
+
+        <br />
+    }
+
+    <style>
+        .checkBoxStyle::before {
+            position: inherit;
+        }
+    </style>
+
+    @foreach (var item in OptionKeys)
+    {
+        <label>
+            @item.KeyName
+            <input type="checkbox" class="checkBoxStyle" style=""
+               @bind="item.ShowOptionValues" @onclick="(()=>handleClick(item))" />
+        </label>
+        <br />
+    }
+
+    <br />
+
+    @foreach (var item in OptionKeys.Where(x => x.ShowOptionValues))
+    {
+        var temp = (from s in OptionValues
+        .Where(s => s.OptionKeyID == item.OptionKeyID)
+                    select s.Value).ToList();
+
+        <p>@($"{item.KeyName}({string.Join(",", temp.ToArray())})")</p>
+    }
+
+    <p hidden=@HideLabel style="color:red">Category & atleast one Options selection is requied</p>
+
+    <Button Color=Color.Primary Size="Size" Block=true Margin=Margin.Is2.FromTop @onclick=AddBulkData>
+        @Localizer["Add Bulk Data"]
+    </Button>
+</Validations>
+
+@functions {
+
+    void DoStuff(ChangeEventArgs e)
+    {
+        CategoryID = (int)Convert.ToDouble(e.Value);
+
+        AppModelObject.BulkAddDtoObject.CategoryId = CategoryID;
+
+        OptionKeys = (from cok in CategoryOptionKeys
+            .Where(s => s.CategoryID == CategoryID)
+                      select cok.OptionKey).ToList();
+
+        ////for serialization
+        string serializedOptionKey = System.Text.Json.JsonSerializer.Serialize(OptionKeys);
+        ////for deserialization
+        ////User userCopy = System.Text.Json.JsonSerializer.Deserialize<User>(serializedString);
+
+        Console.WriteLine(serializedOptionKey);
+        Console.WriteLine(" - It is definitely: " + e.Value.ToString());
+    }
+}
+
+@code {
+
+    Validations validations;
+
+    private void handleClick(OptionKeyDto item)
+    {
+        if (!item.ShowOptionValues)
+        {
+            bulkAdd.Add(item.OptionKeyID);
+        }
+        else
+        {
+            bulkAdd.Remove(item.OptionKeyID);
+        }
+
+        CheckCustomValidations();
+    }
+
+    void ValidateQuantity(ValidatorEventArgs e)
+    {
+        if ((int)e.Value <= 0)
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+}

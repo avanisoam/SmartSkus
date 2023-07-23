@@ -1,0 +1,307 @@
+﻿@using Microsoft.JSInterop;
+@inject IJSRuntime jsRuntime
+
+<Div Display=Display.Flex>
+    <h4 class="d-inline-block">@Localizer["Admin - Options"]</h4>
+    @*<Button Class="shadow-none" Margin=Margin.Is0.OnY.IsAuto.FromStart Padding=Padding.Is0 @onclick="ShowMainScreen">
+        <Icon Class="fa-fw" Name="IconName.Times" />
+    </Button>*@
+</Div>
+
+@if (Action == null)
+{
+    <Row>
+        <Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+            <Button Class="shadow-none" Color="Color.Primary"
+                Size="Size"
+                Margin=Margin.Is1.OnY.IsAuto.FromEnd
+                Padding=Padding.Is0.Is1.OnX @onclick="OpenNew">
+                <Icon Class="fa-fw" Name="IconName.Add" /> @Localizer["Create New"]
+            </Button>
+        </Column>
+        @*<Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+            <Button Class="shadow-none" Color="Color.Danger"
+                Size="Size"
+                Margin=Margin.Is1.OnY.IsAuto.FromStart
+                Padding=Padding.Is0.Is1.OnX
+                @onclick="DeleteAll">
+                <Icon Class="fa-fw" Name="IconName.Delete" /> Delete All
+            </Button>
+        </Column>*@
+    </Row>
+}
+else
+{
+    <Row>
+        <Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+            <Button Class="shadow-none" Color="Color.Primary"
+                Size="Size"
+                Margin=Margin.Is1.OnY.IsAuto.FromStart
+                Padding=Padding.Is0.Is1.OnX
+                @onclick="OpenHome">
+                <Icon Class="fa-fw" Name="IconName.StepBackward" /> @Localizer["Back to List"]
+            </Button>
+        </Column>
+    </Row>
+}
+
+@if (OptionKeys == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (Action == "Create")
+{
+    <h1>@Localizer["Create"]</h1>
+    <hr />
+
+    <div>
+        <Validations @ref="validations" Mode="ValidationMode.Manual">
+            <dl class="row">
+
+                <dt class="col-sm-2">
+                    Key Name
+                </dt>
+                <dd class="col-sm-12">
+                    <div class="form-group">
+
+                        <Validation Validator="ValidateKeyName">
+                            <TextEdit Placeholder="" @bind-Text="newOptionKeyObject.KeyName">
+                                <Feedback>
+                                    <ValidationError>Enter valid Key Name</ValidationError>
+                                </Feedback>
+                            </TextEdit>
+                        </Validation>
+                    </div>
+                </dd>
+            </dl>
+            <button class="btn btn-success" @onclick="AddOptionKey">
+                <Icon Class="fa-fw" Name="IconName.Add" />
+                @Localizer["Add"]
+            </button>
+        </Validations>
+    </div>
+    <br />
+}
+
+else if (Action == "AddOptionValue")
+{
+    <h1>@Localizer["Create Option Value"]</h1>
+    <hr />
+
+    <div>
+        <Validations @ref="validations" Mode="ValidationMode.Manual">
+            <dl class="row">
+
+                <dt class="col-sm-2">
+                    Key Value
+                </dt>
+                <dd class="col-sm-12">
+                    <div class="form-group">
+
+                        <Validation Validator="ValidateKeyValue">
+                            <TextEdit Placeholder="" @bind-Text="newOptionValueObject.Value">
+                                <Feedback>
+                                    <ValidationError>Enter valid Key Value</ValidationError>
+                                </Feedback>
+                            </TextEdit>
+                        </Validation>
+                    </div>
+                </dd>
+            </dl>
+            <button class="btn btn-success" @onclick="AddOptionValue">
+                <Icon Class="fa-fw" Name="IconName.Add" />
+                @Localizer["Add"]
+            </button>
+        </Validations>
+    </div>
+
+    <br />
+}
+
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Key</th>
+                <th></th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var opt in OptionKeys)
+            {
+                <tr>
+                    <th style="cursor:pointer" @onclick="() => opt.ShowOptionValues = !opt.ShowOptionValues">
+                        @(opt.ShowOptionValues ? "-" : "+")
+                    </th>
+                    <td>@opt.KeyName <button type="button" class="btn-close btn-sm btn-danger" @onclick="@(async () => await DeleteOptionKey(opt.OptionKeyID))" data-bs-dismiss="alert"></button></td>
+
+                    <td>
+                        <Row>
+                            <Column Display=Display.Flex>
+
+                                <Button Class="shadow-none" Color="Color.Primary"
+                                    Size="Size"
+                                    Margin=Margin.Is1.OnY.IsAuto.FromStart
+                                    Padding=Padding.Is0.Is1.OnX value="{item.Id}" @onclick="() => DeleteOptionKey(opt.OptionKeyID)">
+                                    <Icon Class="fa-fw" Name="IconName.Delete" />  @Localizer["Delete"]
+                                </Button>
+
+                            </Column>
+                        </Row>
+                    </td>
+
+                </tr>
+                if (@opt.ShowOptionValues)
+                {
+                    <tr>
+                        <td colspan="2">
+
+                            <p>
+                                <Row>
+                                    <Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+                                        <Button Class="shadow-none" Color="Color.Success"
+                                            Size="Size"
+                                            Margin=Margin.Is1.OnY.IsAuto.FromEnd
+                                            Padding=Padding.Is0.Is1.OnX @onclick="() => OpenOptionValue(opt.OptionKeyID)">
+                                            <Icon Class="fa-fw" Name="IconName.Add" /> @Localizer["Add New OptionValue"]
+                                        </Button>
+
+
+                                        @foreach (var val in opt.OptionValues)
+                                        {
+                                            <Button Class="shadow-none" Color="Color.Danger"
+                                                Size="Size"
+                                                Margin=Margin.Is1.OnY.IsAuto.FromStart
+                                                Padding=Padding.Is0.Is1.OnX value="{val.Value}"
+                                                @onclick="@(async () => await DeleteItem(val.OptionValueID))">
+                                                <Icon Class="fa-fw" Name="IconName.Delete" /> @($"{@val.Value} ")
+                                            </Button>
+
+                                        }
+
+                                    </Column>
+
+                                    @*<Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+                                        <Button Class="shadow-none" Color="Color.Danger"
+                                            Size="Size"
+                                            Margin=Margin.Is1.OnY.IsAuto.FromStart
+                                            Padding=Padding.Is0.Is1.OnX
+                                            @onclick="DeleteAll">
+                                            <Icon Class="fa-fw" Name="IconName.Delete" /> Delete All
+                                        </Button>
+                                    </Column>*@
+                                </Row>
+
+                            </p>
+
+                        </td>
+
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    [Parameter]
+    public string? Action { get; set; }
+
+    [Parameter]
+    public long? OptionKeyID { get; set; }
+
+    async Task OpenHome()
+    {
+        Action = null;
+        OptionKeyID = null;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenNew()
+    {
+        Action = "Create";
+        OptionKeyID = null;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenOptionValue(long id)
+    {
+        Action = "AddOptionValue";
+        OptionKeyID = id;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenEdit(long id)
+    {
+        Action = "Edit";
+        OptionKeyID = id;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenDetails(long id)
+    {
+        Action = "Details";
+        OptionKeyID = id;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenDelete(long id)
+    {
+        Action = "Delete";
+        OptionKeyID = id;
+
+        await Task.Delay(0);
+    }
+
+    Blazorise.Size Size => Repository.Settings.Size;
+
+    string Theme => Repository.Settings.Theme;
+
+    int _workaround;
+
+    async Task OnSizeChanged(Blazorise.Size size)
+    {
+        //Repository.Settings.Size = size;
+        //await Repository.UpdateSettings(Repository.Settings.Id);
+
+        await Task.Delay(0);
+    }
+
+    async Task OnThemeChanged(string theme)
+    {
+        _workaround = 1 - _workaround;
+
+        //Repository.Settings.Theme = theme;
+        //await Repository.UpdateSettings(Repository.Settings.Id);
+
+        await Task.Delay(0);
+    }
+}
+
+@code
+{
+    Validations? validations;
+
+    void ValidateKeyName(ValidatorEventArgs e)
+    {
+        e.Status = string.IsNullOrEmpty(Convert.ToString(e.Value))
+            ? ValidationStatus.Error
+            : ValidationStatus.Success;
+    }
+
+    void ValidateKeyValue(ValidatorEventArgs e)
+    {
+        e.Status = string.IsNullOrEmpty(Convert.ToString(e.Value))
+            ? ValidationStatus.Error
+            : ValidationStatus.Success;
+    }
+}

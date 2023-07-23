@@ -1,0 +1,284 @@
+﻿@using Microsoft.JSInterop;
+@using System.Threading;
+
+@inject IJSRuntime jsRuntime
+
+<Div Display=Display.Flex>
+    <h4 class="d-inline-block">@Localizer["Admin - Category"]</h4>
+    @*<Button Class="shadow-none" Margin=Margin.Is0.OnY.IsAuto.FromStart Padding=Padding.Is0 @onclick="ShowMainScreen">
+        <Icon Class="fa-fw" Name="IconName.Times" />
+    </Button>*@
+</Div>
+
+@if (Action == null)
+{
+        <Row>
+            <Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+                <Button Class="shadow-none" Color="Color.Primary"
+                Size="Size"
+                Margin=Margin.Is1.OnY.IsAuto.FromEnd
+                Padding=Padding.Is0.Is1.OnX @onclick="OpenNew">
+                <Icon Class="fa-fw" Name="IconName.Add" /> @Localizer["Create New"]
+                </Button>
+            </Column>
+            @*<Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+                <Button Class="shadow-none" Color="Color.Danger"
+                Size="Size"
+                Margin=Margin.Is1.OnY.IsAuto.FromStart
+                Padding=Padding.Is0.Is1.OnX
+                @onclick="DeleteAll">
+                    <Icon Class="fa-fw" Name="IconName.Delete" /> Delete All
+                </Button>
+            </Column>*@
+        </Row>
+}
+else
+{
+        <Row>
+            <Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+                <Button Class="shadow-none" Color="Color.Primary"
+                Size="Size"
+                Margin=Margin.Is1.OnY.IsAuto.FromStart
+                Padding=Padding.Is0.Is1.OnX
+                @onclick="OpenHome">
+                <Icon Class="fa-fw" Name="IconName.StepBackward" />@Localizer["Back to List"]
+                </Button>
+            </Column>
+        </Row>
+}
+
+@if (Id > 0)
+{
+    editItem = Categories.Single(i => i.CategoryID == Id);
+}
+
+@if (Categories == null)
+{
+        <p><em>Loading...</em></p>
+}
+else if (Action == "Create")
+{
+    <h1>@Localizer["Create"]</h1>
+    <hr />
+
+    <div>
+        <Validations @ref="validations" Mode="ValidationMode.Manual">
+        <dl class="row">
+
+            <dt class="col-sm-2">
+                New Category
+            </dt>
+            <dd class="col-sm-12">
+                <div class="form-group">
+            
+                        <Validation Validator="ValidateCategory">
+                            <TextEdit  Placeholder="Enter Category" @bind-Text="newCategoryObject.Title">
+                            <Feedback>
+                                <ValidationError>Enter valid Category!</ValidationError>
+                            </Feedback>
+                        </TextEdit>
+                    </Validation>
+
+                </div>
+            </dd>
+        </dl>
+        <button class="btn btn-success" @onclick="AddItem">
+            <Icon Class="fa-fw" Name="IconName.Add" />
+                @Localizer["Add"]
+        </button>
+    </Validations>
+    </div>
+}
+
+else if (Action == "Edit")
+{
+    <h1>@Localizer["Edit"]</h1>
+        <hr />
+
+        <div>
+            <dl class="row">
+
+                <dt class="col-sm-2">
+                    Category Name
+                </dt>
+                <dd class="col-sm-10">
+                @editItem.Title
+                </dd>
+            </dl>
+        </div>
+    <div class="form-group">
+        <button class="btn btn-primary" @onclick="UpdateItem">
+            <Icon Class="fa-fw" Name="IconName.Save" />
+            @Localizer["Save"]
+        </button>
+    </div>
+}
+
+else
+{
+        <table class="table">
+            <thead>
+                <tr>
+
+                <th>Category Id</th>
+                <th>Category Name</th>
+                <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var cat in Categories)
+            {
+                        <tr>
+
+                    <td>@cat.CategoryID</td>
+
+                    <td>@cat.Title</td>
+
+                    <td>
+                        <Row>
+                            <Column Display=Display.Flex>
+
+                                <Button Class="shadow-none" Color="Color.Primary"
+                                    Size="Size"
+                                    Margin=Margin.Is1.OnY.IsAuto.FromStart
+                                    Padding=Padding.Is0.Is1.OnX value="{item.Id}" Clicked= "() => ShowModal(cat.CategoryID)">
+                                    <Icon Class="fa-fw" Name="IconName.Info" /> @Localizer["View"]
+                                </Button>
+
+                                <Modal @ref="modalRef">
+                                    <ModalContent Centered>
+                                        <ModalHeader>
+                                            <ModalTitle>@CategoryID</ModalTitle>
+                                            <CloseButton Clicked="@HideModal" />
+                                        </ModalHeader>
+                                        <ModalBody>
+                                            <Field>
+                                                <FieldLabel>Selected Sub Categories List :</FieldLabel>
+                                                <CheckBoxList Data="@OptionKeys"
+                                                  TextField="@((item)=>item.KeyName)"
+                                                  ValueField="@((item)=>item.OptionKeyID)"
+                                                  SelectedValues="@SelectedIds" />
+                                            </Field>
+                                        </ModalBody>
+                                        <ModalFooter>
+                                        <Button Color="Color.Secondary" Clicked="@HideModal">@Localizer["Close"]</Button>
+                                        </ModalFooter>
+                                    </ModalContent>
+                                </Modal>
+
+                                <Button Class="shadow-none" Color="Color.Primary"
+                        Size="Size"
+                        Margin=Margin.Is1.OnY.IsAuto.FromStart
+                                Padding=Padding.Is0.Is1.OnX value="{item.Id}" @onclick="() => DeleteItem(cat.CategoryID)">
+                                <Icon Class="fa-fw" Name="IconName.Delete" /> @Localizer["Delete"]
+                                </Button>
+
+                            </Column>
+                        </Row>
+                    </td>
+                        </tr>
+            }
+            </tbody>
+        </table>
+}
+
+@code {
+
+    private Modal? modalRef;
+
+    string? name;
+
+    public string? OutPutValue { get; set; }
+
+
+
+    private Task HideModal()
+    {
+        string? str = name;
+        SelectedIds = new List<long>();
+
+        return modalRef.Hide();
+    }
+
+    [Parameter]
+    public string? Action { get; set; }
+
+    [Parameter]
+    public int? CategoryID { get; set; }
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    async Task OpenHome()
+    {
+        Action = null;
+        CategoryID = null;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenNew()
+    {
+        Action = "Create";
+        CategoryID = null;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenEdit(int id)
+    {
+        Action = "Edit";
+        CategoryID = id;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenDetails(int id)
+    {
+        Action = "Details";
+        CategoryID = id;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenDelete(int id)
+    {
+        Action = "Delete";
+        CategoryID = id;
+
+        await Task.Delay(0);
+    }
+
+    Blazorise.Size Size => Repository.Settings.Size;
+
+    string Theme => Repository.Settings.Theme;
+
+    int _workaround;
+
+    async Task OnSizeChanged(Blazorise.Size size)
+    {
+        //Repository.Settings.Size = size;
+        //await Repository.UpdateSettings(Repository.Settings.Id);
+
+        await Task.Delay(0);
+    }
+
+    async Task OnThemeChanged(string theme)
+    {
+        _workaround = 1 - _workaround;
+
+        //Repository.Settings.Theme = theme;
+        //await Repository.UpdateSettings(Repository.Settings.Id);
+
+        await Task.Delay(0);
+    }
+}
+@code
+{
+    void ValidateCategory(ValidatorEventArgs e)
+    {
+        e.Status = string.IsNullOrEmpty(Convert.ToString(e.Value))
+            ? ValidationStatus.Error
+            : ValidationStatus.Success;
+    }
+}

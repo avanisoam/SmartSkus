@@ -1,0 +1,108 @@
+﻿@*@page "/options"*@
+
+@using SmartSkus.Core.Backup
+@using SmartSkus.Shared.Enums;
+@using Microsoft.AspNetCore.Components.Forms
+
+<Card Margin=Margin.Is0.OnMobile.Is2.OnDesktop Padding=Padding.Is0 Style="max-width: 414px">
+    <CardBody Padding=Padding.Is1>
+
+       @* <Button Color=Color.Primary Size="Size" Block=true @onclick=LoadExamples>@Localizer["Load examples"]</Button>
+
+        <Button Color=Color.Primary Size="Size" Block=true @onclick=DeleteAll>@Localizer["Delete all"]</Button>*@
+
+        <Button Color=Color.Primary Size="Size" Block=true @onclick=ResetSettings>@Localizer["Reset settings"]</Button>
+
+        <Field Margin=Margin.Is0.Is2.FromTop>
+            <FieldLabel Margin=Margin.Is0>@Localizer["Language"]:</FieldLabel>
+
+            <Translations LanguageChanged="LanguageChanged" />
+        </Field>
+
+        <Field Margin=Margin.Is0.Is2.FromTop>
+            <FieldLabel Margin=Margin.Is0>@Localizer["Size"]:</FieldLabel>
+
+            @if (IsApple)
+            {
+                <select class="form-select" value="@Size" @onchange="OnSizeChangeEvent">
+                    <option value="@Blazorise.Size.Default">@Localizer["Default"]</option>
+                    <option value="@Blazorise.Size.Small">@Localizer["Small"]</option>
+                    <option value="@Blazorise.Size.Medium">@Localizer["Medium"]</option>
+                    <option value="@Blazorise.Size.Large">@Localizer["Large"]</option>
+                </select>
+            }
+            else
+            {
+                <Select TValue="Size" Size="Size" SelectedValue="Size" SelectedValueChanged="OnSizeChanged">
+                    <SelectItem Value="Blazorise.Size.Default">@Localizer["Default"]</SelectItem>
+                    <SelectItem Value="Blazorise.Size.Small">@Localizer["Small"]</SelectItem>
+                    <SelectItem Value="Blazorise.Size.Medium">@Localizer["Medium"]</SelectItem>
+                    <SelectItem Value="Blazorise.Size.Large">@Localizer["Large"]</SelectItem>
+                </Select>
+            }
+        </Field>
+
+        <Field Margin=Margin.Is0.Is2.FromTop>
+            <FieldLabel Margin=Margin.Is0>@Localizer["Theme"]:</FieldLabel>
+
+            @if (IsApple)
+            {
+                <select class="form-select" value="@Theme" @onchange="OnThemeChangeEvent">
+                    <option value="default">default</option>
+                    @foreach (string theme in Themes)
+                    {
+                        <option value="@theme">@theme</option>
+                    }
+                </select>
+            }
+            else
+            {
+                <Select TValue="string" Size="Size" SelectedValue="Theme" SelectedValueChanged="OnThemeChanged">
+                    <SelectItem Value="@("default")">default</SelectItem>
+                    @foreach (string theme in Themes)
+                    {
+                        <SelectItem Value="theme">@theme</SelectItem>
+                    }
+                </Select>
+            }
+        </Field>
+
+        <Field Margin=Margin.Is0.Is2.FromTop>
+            <FieldLabel Margin=Margin.Is0>@Localizer["Background"]:</FieldLabel>
+
+            @if (IsApple)
+            {
+                <select class="form-select" value="@Background" @onchange="OnBackgroundChangeEvent">
+                    <option value="Default">Default</option>
+                    @foreach (string background in Backgrounds)
+                    {
+                        <option value="@background">@background</option>
+                    }
+                </select>
+            }
+            else
+            {
+                <Select TValue="string" Size="Size" SelectedValue="Background" SelectedValueChanged="OnBackgroundChanged">
+                    @foreach (string background in Backgrounds)
+                    {
+                        <SelectItem Value="background">@background</SelectItem>
+                    }
+                </Select>
+            }
+        </Field>
+
+        @if (IsPersonalComputer)
+        {
+           @* <Label For="JSON-upload" Display=Display.Block Margin=Margin.Is2.FromTop class="btn btn-primary">@Localizer["Import JSON"]</Label>
+            <InputFile id="JSON-upload" class="d-none" OnChange=Import />*@
+
+            <Button Color=Color.Primary Size="Size" Block=true @onclick="async () => await ExportData(DataFormat.Json)">@Localizer["Export JSON"]</Button>
+
+           @* <Label For="YAML-upload" Display=Display.Block Margin=Margin.Is2.FromTop class="btn btn-primary">@Localizer["Import YAML"]</Label>
+            <InputFile id="YAML-upload" class="d-none" OnChange=Import />*@
+
+            <Button Color=Color.Primary Size="Size" Block=true @onclick="async () => await ExportData(DataFormat.Yaml)">@Localizer["Export YAML"]</Button>
+        }
+
+    </CardBody>
+</Card>

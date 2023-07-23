@@ -1,0 +1,42 @@
+﻿@using SmartSkus.Core.Local.Models;
+
+<Validations @ref="validations" Mode="ValidationMode.Manual">
+    <Validation Validator="@ValidationRule.IsNotEmpty">
+        <Field Margin=Margin.Is0.Is2.FromTop>
+            <FieldLabel Margin=Margin.Is0>@Localizer["Item Name"]:</FieldLabel>
+            <TextEdit @bind-Text="@AppModelObject.SkuModelDtoObject.ItemName">
+                <Feedback>
+                    <ValidationError>Item Name is Required</ValidationError>
+                </Feedback>
+            </TextEdit>
+        </Field>
+    </Validation>
+
+    <Validation Validator="@ValidationRule.IsNotEmpty">
+        <Field>
+            <FieldLabel Margin=Margin.Is0>@Localizer["Attribute1"]:</FieldLabel>
+            <TextEdit @bind-Text="@AppModelObject.SkuModelDtoObject.Attribute1">
+                <Feedback>
+                    <ValidationError>Atleast one Attribute is Required</ValidationError>
+                </Feedback>
+            </TextEdit>
+        </Field>
+    </Validation>
+
+    <Field>
+        <FieldLabel Margin=Margin.Is0>@Localizer["Attribute2"]:</FieldLabel>
+        <TextEdit @bind-Text="@AppModelObject.SkuModelDtoObject.Attribute2" />
+
+        <FieldLabel Margin=Margin.Is0>@Localizer["Attribute3"]:</FieldLabel>
+        <TextEdit @bind-Text="@AppModelObject.SkuModelDtoObject.Attribute3" />
+
+        <Button Color=Color.Primary Size="Size" Block=true Margin=Margin.Is2.FromTop @onclick=AddSkuModel>
+            @Localizer["Add Sku"]
+        </Button>
+
+    </Field>
+</Validations>
+
+@code {
+    Validations? validations;
+}

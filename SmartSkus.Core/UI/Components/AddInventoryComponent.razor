@@ -1,0 +1,53 @@
+﻿@using SmartSkus.Core.Local.Models;
+@using SmartSkus.Shared.Dtos;
+
+<Validations @ref="validations" Mode="ValidationMode.Manual">
+    <Validation Validator="@ValidationRule.IsNotEmpty">
+        <Field Margin=Margin.Is0.Is2.FromTop>
+            <FieldLabel Margin=Margin.Is0>@Localizer["SKU Code"]:</FieldLabel>
+            <TextEdit @bind-Text="@AppModelObject.SkuModelDtoObject.GenerateSku">
+                <Feedback>
+                    <ValidationError>Item Name is Required</ValidationError>
+                </Feedback>
+            </TextEdit>
+        </Field>
+    </Validation>
+
+    <Field>
+        <FieldLabel Margin=Margin.Is0>@Localizer["Description"]:</FieldLabel>
+        <TextEdit @bind-Text="@AppModelObject.SkuModelDtoObject.Description">
+        </TextEdit>
+    </Field>
+       
+    
+        <Field>
+            <FieldLabel Margin=Margin.Is0>@Localizer["Quantity"]:</FieldLabel>
+        <NumericEdit @bind-Value="@AppModelObject.SkuModelDtoObject.Quantity">
+                <Feedback>
+                    <ValidationError>Quantity is Required</ValidationError>
+                </Feedback>
+            </NumericEdit>
+        </Field>
+    
+
+    <Button Color=Color.Primary Size="Size" Block=true Margin=Margin.Is2.FromTop @onclick=AddItem>
+        @Localizer["Add / Update Inventory"]
+    </Button>
+</Validations>
+
+@code {
+
+    Validations? validations;
+
+    void ValidateQuantity(ValidatorEventArgs e)
+    {
+        //if ((long)e.Value == 0)
+        //{
+        //    e.Status = ValidationStatus.Error;
+        //}
+        //else
+        //{
+        //    e.Status = ValidationStatus.Success;
+        //}
+    }
+}

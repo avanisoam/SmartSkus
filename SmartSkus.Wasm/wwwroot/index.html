@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Smart Sku's</title>
+    <base href="/" />
+    <link href="_content/SmartSkus.Core/css/app.css" rel="stylesheet">
+    <link href="manifest.json" rel="manifest" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+
+    <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
+    <link href="_content/Blazorise.Bootstrap5/blazorise.bootstrap5.css" rel="stylesheet" />
+    <link href="_content/Blazorise.TreeView/blazorise.treeview.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">
+        <div class="sk-cube-grid">
+            <div class="sk-cube sk-cube1"></div>
+            <div class="sk-cube sk-cube2"></div>
+            <div class="sk-cube sk-cube3"></div>
+            <div class="sk-cube sk-cube4"></div>
+            <div class="sk-cube sk-cube5"></div>
+            <div class="sk-cube sk-cube6"></div>
+            <div class="sk-cube sk-cube7"></div>
+            <div class="sk-cube sk-cube8"></div>
+            <div class="sk-cube sk-cube9"></div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+
+    <script src="_content/DnetIndexedDb/rxjs.min.js"></script>
+    <script src="_content/DnetIndexedDb/dnet-indexeddb.js"></script>
+
+    <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+
+    <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
+
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+</body>
+
+</html>

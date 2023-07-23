@@ -1,0 +1,515 @@
+﻿@using Microsoft.JSInterop;
+@inject IJSRuntime jsRuntime
+
+<Div Display=Display.Flex>
+    <h4 class="d-inline-block">@Localizer["Admin - Inventory"]</h4>
+    <Button Class="shadow-none" Margin=Margin.Is0.OnY.IsAuto.FromStart Padding=Padding.Is0 @onclick="ShowMainScreen">
+        <Icon Class="fa-fw" Name="IconName.Times" />
+    </Button>
+</Div>
+
+@if (Action == null)
+{
+    <Row>
+        <Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+            <Button Class="shadow-none" Color="Color.Primary"
+                Size="Size"
+                Margin=Margin.Is1.OnY.IsAuto.FromEnd
+                Padding=Padding.Is0.Is1.OnX @onclick="OpenNew">
+                <Icon Class="fa-fw" Name="IconName.Add" /> @Localizer["Create New"]
+            </Button>
+        </Column>
+        <Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+            <Button Class="shadow-none" Color="Color.Primary"
+                Size="Size"
+                Margin=Margin.Is1.OnY.IsAuto.FromEnd
+                Padding=Padding.Is0.Is1.OnX>
+                <Icon Class="fa-fw" Name="IconName.BalanceScale" /> @Localizer["Count"] : @Count
+            </Button>
+        </Column>
+        <Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+            <Button Class="shadow-none" Color="Color.Danger"
+                Size="Size"
+                Margin=Margin.Is1.OnY.IsAuto.FromStart
+                Padding=Padding.Is0.Is1.OnX
+                Clicked="@DeleteAll">
+                <Icon Class="fa-fw" Name="IconName.Delete" /> @Localizer["Delete All"]
+            </Button>
+        </Column>
+    </Row>
+}
+else
+{
+    <Row>
+        <Column Display=Display.Flex Border=Border.Is1.OnTop.Primary>
+            <Button Class="shadow-none" Color="Color.Primary"
+                Size="Size"
+                Margin=Margin.Is1.OnY.IsAuto.FromStart
+                Padding=Padding.Is0.Is1.OnX
+                @onclick="OpenHome">
+                <Icon Class="fa-fw" Name="IconName.StepBackward" /> @Localizer["Back to List"]
+            </Button>
+        </Column>
+    </Row>
+}
+
+@if (Id > 0)
+{
+    editItem = Skus.Single(i => i.Id == Id);
+}
+
+@if (Skus == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (Action == "Create")
+{
+    <h1>@Localizer["Create"]</h1>
+    <hr />
+
+    <div>
+        <Validations @ref="validations" Mode="ValidationMode.Manual">
+            <dl class="row">
+
+                <Validation Validator="@ValidationRule.IsNotEmpty">
+                    <Field Horizontal>
+                        <FieldLabel ColumnSize="ColumnSize.Is8">Item Name</FieldLabel>
+                        <FieldBody ColumnSize="ColumnSize.Is8">
+                            <TextEdit Placeholder="" @bind-Text="@newSkuObject.ItemName">
+                                <Feedback>
+                                    <ValidationError>Item Name is required</ValidationError>
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+
+                <Validation Validator="@ValidationRule.IsNotEmpty">
+                    <Field Horizontal>
+                        <FieldLabel ColumnSize="ColumnSize.Is8">Attribute1</FieldLabel>
+                        <FieldBody ColumnSize="ColumnSize.Is8">
+                            <TextEdit Placeholder="" @bind-Text="@newSkuObject.Attribute1">
+                                <Feedback>
+                                    <ValidationError>Atleast one attribute required</ValidationError>
+                                </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+
+                <Field Horizontal>
+                    <FieldLabel ColumnSize="ColumnSize.Is8">Attribute2</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.Is8">
+                        <TextEdit Placeholder="" @bind-Text="@newSkuObject.Attribute2">
+                        </TextEdit>
+                    </FieldBody>
+                </Field>
+
+                <Field Horizontal>
+                    <FieldLabel ColumnSize="ColumnSize.Is8">Attribute3</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.Is8">
+                        <TextEdit Placeholder="" @bind-Text="@newSkuObject.Attribute3">
+                        </TextEdit>
+                    </FieldBody>
+                </Field>
+
+                <Field Horizontal>
+                    <FieldLabel ColumnSize="ColumnSize.Is8">Attribute3</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.Is8">
+                        <TextEdit Placeholder="" @bind-Text="@newSkuObject.Attribute3">
+                        </TextEdit>
+                    </FieldBody>
+                </Field>
+
+                <Field Horizontal>
+                    <FieldLabel ColumnSize="ColumnSize.Is8">Description</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.Is8">
+                        <TextEdit Placeholder="" @bind-Text="@newSkuObject.Description">
+                        </TextEdit>
+                    </FieldBody>
+                </Field>
+
+                <Field Horizontal>
+                    <FieldLabel ColumnSize="ColumnSize.Is8">Description</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.Is8">
+                    <NumericEdit @bind-Value="@newSkuObject.Quantity">
+                        <Feedback>
+                            <ValidationError>Quantity is Required</ValidationError>
+                        </Feedback>
+                    </NumericEdit>
+                    </FieldBody>
+                </Field>>
+                 
+            </dl>
+
+            <button class="btn btn-success" @onclick="AddItem">
+                <Icon Class="fa-fw" Name="IconName.Add" />
+            @Localizer["Add"]
+            </button>
+        </Validations>
+    </div>
+}
+else if (Action == "Edit")
+{
+    <h5>
+        @Localizer["Edit"]
+    </h5>
+
+    <hr />
+
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">
+                Id
+            </dt>
+            <dd class="col-sm-12">
+                <div class="form-group">
+                    <input @bind="editItem.Id" disabled="disabled" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </dd>
+            <dt class="col-sm-2">
+                Item Name
+            </dt>
+            <dd class="col-sm-12">
+                <div class="form-group">
+                    <input @bind="editItem.ItemName" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </dd>
+
+            <dt class="col-sm-2">
+                Attribute1
+            </dt>
+            <dd class="col-sm-12">
+                <div class="form-group">
+                    <input @bind="editItem.Attribute1" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </dd>
+
+            <dt class="col-sm-2">
+                Attribute2
+            </dt>
+            <dd class="col-sm-12">
+                <div class="form-group">
+                    <input @bind="editItem.Attribute2" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </dd>
+            <dt class="col-sm-2">
+                Attribute3
+            </dt>
+            <dd class="col-sm-12">
+                <div class="form-group">
+                    <input @bind="editItem.Attribute3" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </dd>
+             <dt class="col-sm-2">
+                Generated Sku
+            </dt>
+            <dd class="col-sm-12">
+                <div class="form-group">
+                    <input @bind="editItem.GenerateSku" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </dd>
+            <dt class="col-sm-2">
+               Description
+            </dt>
+            <dd class="col-sm-12">
+                <div class="form-group">
+                    <input @bind="editItem.Description" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </dd>
+                 <dt class="col-sm-2">
+               Quantity
+                </dt>
+            <dd class="col-sm-12">
+                <div class="form-group">
+                    <input @bind="editItem.Quantity" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </dd>
+  
+        </dl>
+        <div class="form-group">
+            <button class="btn btn-primary" @onclick="UpdateItem">
+                <Icon Class="fa-fw" Name="IconName.Save" />
+                @Localizer["Save"]
+            </button>
+        </div>
+    </div>
+}
+else if (Action == "Details")
+{
+    <h5>
+        @Localizer["Details"]
+    </h5>
+    <hr />
+    <br />
+    <div>
+        <dl class="row">
+
+            <dt class="col-sm-2">
+                Id
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Id
+            </dd>
+
+            <dt class="col-sm-2">
+                Item Name
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.ItemName
+            </dd>
+
+            <dt class="col-sm-2">
+                Attribute1
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Attribute1
+            </dd>
+
+            <dt class="col-sm-2">
+                Attribute2
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Attribute2
+            </dd>
+            <dt class="col-sm-2">
+                Attribute3
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Attribute3
+            </dd>
+            <dt class="col-sm-2">
+                Generated Sku
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.GenerateSku
+            </dd>
+            <dt class="col-sm-2">
+                Description
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Description
+            </dd>
+            <dt class="col-sm-2">
+                Quantity
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Quantity
+            </dd>
+        </dl>
+    </div>
+}
+else if (Action == "Delete")
+{
+    <h1>@Localizer["Delete"]</h1>
+    <hr />
+
+    <h3>@Localizer["Are you sure you want to delete this?"]</h3>
+
+    <div>
+        <hr />
+        <dl class="row">
+
+            <dt class="col-sm-2">
+                Id
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Id
+            </dd>
+
+            <dt class="col-sm-2">
+                Item Name
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.ItemName
+            </dd>
+
+            <dt class="col-sm-2">
+                Attribute1
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Attribute1
+            </dd>
+
+            <dt class="col-sm-2">
+                Attribute2
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Attribute2
+            </dd>
+            <dt class="col-sm-2">
+                Attribute3
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Attribute3
+            </dd>
+            <dt class="col-sm-2">
+                Generated Sku
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.GenerateSku
+            </dd>
+            <dt class="col-sm-2">
+                Description
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Description
+            </dd>
+            <dt class="col-sm-2">
+               Quantity
+            </dt>
+            <dd class="col-sm-10">
+                @editItem.Quantity
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <button class="btn btn-danger"
+            @onclick="@(async () => await DeleteItem(editItem.Id))">
+            <Icon Class="fa-fw" Name="IconName.Delete" />
+            @Localizer["Delete"]
+        </button>
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th><b>Item Name</b></th>
+                <th><b>Attribute1</b></th>
+                <th><b>Attribute2</b></th>
+                <th><b>Attribute3</b></th>
+                <th><b>Generated SKU</b></th>
+                <th><b>Description</b></th>
+                <th><b>Quantity</b></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sku in Skus)
+            {
+                <tr>
+                    <td>@sku.ItemName</td>
+                    <td>@sku.Attribute1</td>
+                    <td>@sku.Attribute2</td>
+                    <td>@sku.Attribute3</td>
+                    <td>@sku.GenerateSku</td>
+                    <td>@sku.Description</td>
+                    <td>@sku.Quantity</td>
+                    <td>
+                        <Row>
+                            <Column Display=Display.Flex>
+
+                                <Button Class="shadow-none" Color="Color.Primary"
+                                Size="Size"
+                                Margin=Margin.Is1.OnY.IsAuto.FromStart
+                                Padding=Padding.Is0.Is1.OnX value="{item.Id}" @onclick="() => OpenEdit(sku.Id)">
+                                    <Icon Class="fa-fw" Name="IconName.Edit" /> @Localizer["Edit"]
+                                </Button>
+
+                                <Button Class="shadow-none" Color="Color.Primary"
+                                Size="Size"
+                                Margin=Margin.Is1.OnY.IsAuto.FromStart
+                                Padding=Padding.Is0.Is1.OnX value="{item.Id}" @onclick="() => OpenDetails(sku.Id)">
+                                    <Icon Class="fa-fw" Name="IconName.Info" /> @Localizer["View"]
+                                </Button>
+
+                                <Button Class="shadow-none" Color="Color.Primary"
+                                Size="Size"
+                                Margin=Margin.Is1.OnY.IsAuto.FromStart
+                                Padding=Padding.Is0.Is1.OnX value="{item.Id}" @onclick="() => OpenDelete(sku.Id)">
+                                    <Icon Class="fa-fw" Name="IconName.Delete" /> @Localizer["Delete"]
+                                </Button>
+
+                            </Column>
+                        </Row>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    Validations? validations;
+
+    [Parameter]
+    public string? Action { get; set; }
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    async Task OpenHome()
+    {
+        Action = null;
+        Id = null;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenNew()
+    {
+        Action = "Create";
+        Id = null;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenEdit(int id)
+    {
+        Action = "Edit";
+        Id = id;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenDetails(int id)
+    {
+        Action = "Details";
+        Id = id;
+
+        await Task.Delay(0);
+    }
+
+    async Task OpenDelete(int id)
+    {
+        Action = "Delete";
+        Id = id;
+
+        await Task.Delay(0);
+    }
+
+    Blazorise.Size Size => Repository.Settings.Size;
+
+    string Theme => Repository.Settings.Theme;
+
+    int _workaround;
+
+    async Task OnSizeChanged(Blazorise.Size size)
+    {
+        //Repository.Settings.Size = size;
+        //await Repository.UpdateSettings(Repository.Settings.Id);
+
+        await Task.Delay(0);
+    }
+
+    async Task OnThemeChanged(string theme)
+    {
+        _workaround = 1 - _workaround;
+
+        //Repository.Settings.Theme = theme;
+        //await Repository.UpdateSettings(Repository.Settings.Id);
+
+        await Task.Delay(0);
+    }
+}

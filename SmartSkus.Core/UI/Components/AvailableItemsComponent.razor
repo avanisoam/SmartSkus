@@ -1,0 +1,22 @@
+﻿
+
+@if (AppModelObject.ItemDtoList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <Button Color=Color.Primary Size="Size" Block=true Margin=Margin.Is2.FromTop
+        @onclick="LoadAllFromCache">
+        @Localizer["View All Categories"]
+    </Button>
+
+    @foreach (var item in AppModelObject.ItemDtoList)
+    {
+        <Button Color=Color.Primary Size="Size" Block=true Margin=Margin.Is2.FromTop 
+        @onclick="@(async () => await ClickId(item.ItemID))">
+            @*@Localizer[$"ItemId -{item.ItemID} , Item Name - {@item.Name}"]*@
+            @Localizer[$"Category Name - {@item.Name}"]
+        </Button>
+    }
+}

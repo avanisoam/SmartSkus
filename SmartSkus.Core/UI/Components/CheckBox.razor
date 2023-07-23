@@ -1,0 +1,12 @@
+﻿@*https://stackoverflow.com/questions/28283042/how-do-i-insert-spaces-within-a-razor-code-block*@
+
+<style>
+    .checkBoxStyle::before {
+        position: inherit;
+    }
+</style>
+
+<div class="custom-control custom-checkbox">
+    <input @ref=_elementReference class="custom-control-input checkBoxStyle" id="@_elementId" type="checkbox" checked="@_internalChecked" @onchange="OnChange" /> <text>&nbsp;&nbsp;</text>
+    <label class="custom-control-label" for="@_elementId">@ChildContent</label>
+</div>

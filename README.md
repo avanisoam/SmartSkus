@@ -174,6 +174,10 @@ There are three ways by which items can be added in Inventory.
 
 ![AdminSubOptions](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminOptionsSubOptions.PNG)
 
+### Download
+
+![Export](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/JsonYamlExport.PNG)
+
 ### Admin Settings
 
 ![AdminSettings](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminSettings.PNG)

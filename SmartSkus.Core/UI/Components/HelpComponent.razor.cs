@@ -14,13 +14,20 @@ public partial class HelpComponent
     ITextLocalizer<Translations> Localizer { get; set; } = null!;
 
     [Inject]
-    IRepository Repository { get; set; } = null!; 
+    IRepository Repository { get; set; } = null!;
+
+    [Inject]
+    IMyService MyService { get; set; } = null!;
 
     #endregion
+
 
     async Task ShowMainScreen()
     {
         Repository.Settings.Screen = Screen.Main;
         await Repository.UpdateSettings(Repository.Settings.Id);
+
+        //child component
+        MyService.CallRequestRefresh();
     }
 }

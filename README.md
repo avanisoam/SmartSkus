@@ -89,19 +89,19 @@ SKU numbers are important because they ensure your inventory is accurately track
 
  ### Click To Login
  
-![BeforeLogin](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/BeforeLogin.PNG)
+![BeforeLogin](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/Login%20Header.PNG)
 
 ### Enter Email And Password (As of now, only click on login button on the popup to logged in)
 
-![LoginPanel](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/LoginPopUp.PNG)
+![LoginPanel](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/Login%20Popup.PNG)
 
 ### After you enter email and password you are now logged in as Admin User and can see the admin panel at the bottom of the page
 
-![Admin Footbar](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/CloserLook-AdminFootbar.PNG)
+![Admin Footbar](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/Admin%20Panel.PNG)
 
 ### Header Says Logged In User Name
 
-![AfterLogin](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/AfterLogin.PNG)
+![AfterLogin](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AfterLoginHeader.PNG)
 
 # About
 
@@ -144,38 +144,7 @@ There are three ways by which items can be added in Inventory.
  1. By adding Sku, Description and Quantity.
  2. Manual Entry or One Item at a time entry and Sku is generated automatically.
  3. Bulk Items Entry and Skus are generated automatically.
-
-### Manual Entry:
-
-![Manual Entry](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/ManualEntry.PNG)
-
-### After Adding Single Item (Manual Entry), Data On Dashboard:
-
-![ManualDisplay](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/ManualDataDisplay.PNG)
-
-### Bulk Entry :
-
-![BulkEntry](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/AddBulk.PNG)
-
-### After Adding Bulk Items, Data On Dashboard
-
-![BulkDisplay](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/BulkAddDataDisplay.PNG)
-
-#### You can also see the newly added item/ items seprately by clicking the following buttons :
-
-![SideBarViewButtons](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/ViewAll.PNG)
-
-#### Item1 (Default Item) Seperate View on Dashboard :
-
-![Item1](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/ItemId1-View.PNG)
-
-#### Item2 (Manual / Single Add Item) Seperate View on Dashboard :
-
-![ManualDisplay](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/Item2-View.PNG)
-
-#### Item3 (Bulk Add Items) Seperate View on Dashboard :
-
-![BulkDisplay](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/Item3-View.PNG)
+ 4. 
 
 # Admin Panel
 
@@ -183,29 +152,51 @@ There are three ways by which items can be added in Inventory.
 
 #### Admin User can Add, Update, Delete, View items in Inventory using this panel:
 
-![AdminInventory](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/AdminInventory.PNG)
+![AdminInventory](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/Admin%20Inventory.PNG)
 
-#### Admin Add New Item in Inventory :
+### Admin Category:
 
-![AddInventory](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/AddInventory.PNG)
+#### Admin User can add Categories to divide Inventory items into.
 
-#### After Adding :
+![AdminCategory](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminCategory.PNG)
 
-![AddResult](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/AddInventoryResult.PNG)
+#### The Categories can futher select sub categories options from here:
 
-#### Admin Edit Item in Inventory :
+![CategoryView](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminCategoryView.PNG)
 
-![EditInventory](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/EditInventory.PNG)
+### Admin Options
 
-#### After Editing :
+#### The options selected under Category View button can be managed from AdminOptions:
 
-![EditResult](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/EditInventoryResult.PNG)
+![AdminOptions](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminOptions.PNG)
 
-#### View a particular item in Inventory :
+#### These Options can have multiple sub options:
 
-![ViewInventory](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/ViewInventory.PNG)
+![AdminSubOptions](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminOptionsSubOptions.PNG)
 
-#### Delete Item In Inventory :
+### Download
 
-![Delete Inventory](https://github.com/Samvatsara2023/HitNtry_Ididit_Template/blob/SKU/DueVej/SmartSku.Shared/SmartSku-Screen%20Shots/DeleteInventory.PNG)
+![Export](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/JsonYamlExport.PNG)
 
+### Admin Settings
+
+![AdminSettings](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminSettings.PNG)
+
+### Help 
+
+#### Lower Left most button (?) is to describe the icons used in the application
+
+![Help](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/Help.PNG)
+
+### About
+
+#### Lower Right most button (i) Tells some breif description about the application
+
+![About](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/About.PNG)
+
+
+### Setting
+
+#### Can set the look and feel and language etc. :
+
+![LeftUpperSetting](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/LeftOptions.PNG)

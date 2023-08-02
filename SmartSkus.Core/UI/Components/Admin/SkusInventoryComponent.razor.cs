@@ -95,6 +95,18 @@ namespace SmartSkus.Core.UI.Components.Admin
                 skus = Skus.ToArray();
                 Count = Count + 1;
 
+                AppModelObject.SkuModelDtoList = (List<SkuModelDto>)await InventoryService.GetAll();
+
+                AppModelObject.ItemDtoList = (List<ItemDto>)await InventoryService.GetAllItems();
+                AppModelObject.ItemVariationDtoList
+                    = (List<ItemVariationDto>)await InventoryService.GetAllItemVariations();
+
+                AppModelObject.SelectedSkuModelDtoList = AppModelObject.SkuModelDtoList;
+                AppModelObject.SelectedItemDtoList = AppModelObject.ItemDtoList;
+                AppModelObject.SelectedItemVariationDtoList = AppModelObject.ItemVariationDtoList;
+
+                await AppModelObjectChanged.InvokeAsync(AppModelObject);
+
                 Action = null;
                 Id = null;
             }
@@ -109,6 +121,18 @@ namespace SmartSkus.Core.UI.Components.Admin
             }
 
             Skus = await InventoryService.GetAll();
+
+            AppModelObject.SkuModelDtoList = (List<SkuModelDto>)await InventoryService.GetAll();
+
+            AppModelObject.ItemDtoList = (List<ItemDto>)await InventoryService.GetAllItems();
+            AppModelObject.ItemVariationDtoList
+                = (List<ItemVariationDto>)await InventoryService.GetAllItemVariations();
+
+            AppModelObject.SelectedSkuModelDtoList = AppModelObject.SkuModelDtoList;
+            AppModelObject.SelectedItemDtoList = AppModelObject.ItemDtoList;
+            AppModelObject.SelectedItemVariationDtoList = AppModelObject.ItemVariationDtoList;
+
+            await AppModelObjectChanged.InvokeAsync(AppModelObject);
 
             Action = null;
             Id = null;

@@ -2,12 +2,12 @@
 @using SmartSkus.Shared.Dtos;
 
 <Validations @ref="validations" Mode="ValidationMode.Manual">
-    <Validation Validator="@ValidationRule.IsNotEmpty">
+    <Validation Validator="ValidateSku">
         <Field Margin=Margin.Is0.Is2.FromTop>
             <FieldLabel Margin=Margin.Is0>@Localizer["SKU Code"]:</FieldLabel>
             <TextEdit @bind-Text="@AppModelObject.SkuModelDtoObject.GenerateSku">
                 <Feedback>
-                    <ValidationError>Item Name is Required</ValidationError>
+                    <ValidationError>InValid SKU.<br /> Please enter valid SKU, Ex: 00-00-00-00</ValidationError>
                 </Feedback>
             </TextEdit>
         </Field>
@@ -48,6 +48,20 @@
         //else
         //{
         //    e.Status = ValidationStatus.Success;
-        //}
+    //}
     }
+
+    void ValidateSku(ValidatorEventArgs e)
+    {
+        var sku = Convert.ToString(e.Value);
+        if (sku.Length < 2)
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+
 }

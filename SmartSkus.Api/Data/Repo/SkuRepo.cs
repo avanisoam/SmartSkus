@@ -35,7 +35,7 @@ namespace SmartSkus.Api.Data.Repo
 
         public IEnumerable<SkuModel> GetAll()
         {
-            return _context.skuModels.ToList();
+            return _context.skuModels.OrderBy(x => x.Id).ToList();
         }
 
         public SkuModel[] GetAllSkuArray()

@@ -63,7 +63,8 @@ namespace SmartSkus.Core.UI.Components
                     ItemName = AppModelObject.SkuModelDtoObject.ItemName,
                     Attribute1 = AppModelObject.SkuModelDtoObject.Attribute1,
                     Attribute2 = AppModelObject.SkuModelDtoObject.Attribute2,
-                    Attribute3 = AppModelObject.SkuModelDtoObject.Attribute3
+                    Attribute3 = AppModelObject.SkuModelDtoObject.Attribute3,
+                    Description = AppModelObject.SkuModelDtoObject.Description
 
                     // GenerateSku - Derived Value
                 };

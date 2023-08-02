@@ -1,12 +1,23 @@
 ﻿@using SmartSkus.Core.Local.Models;
 
 <Validations @ref="validations" Mode="ValidationMode.Manual">
-    <Validation Validator="@ValidationRule.IsNotEmpty">
+    <Validation Validator="ValidateSku">
         <Field Margin=Margin.Is0.Is2.FromTop>
             <FieldLabel Margin=Margin.Is0>@Localizer["Item Name"]:</FieldLabel>
             <TextEdit @bind-Text="@AppModelObject.SkuModelDtoObject.ItemName">
                 <Feedback>
-                    <ValidationError>Item Name is Required</ValidationError>
+                    <ValidationError>Item Name should more than 2 characters.</ValidationError>
+                </Feedback>
+            </TextEdit>
+        </Field>
+    </Validation>
+
+    <Validation Validator="@ValidationRule.IsNotEmpty">
+        <Field>
+            <FieldLabel Margin=Margin.Is0>@Localizer["Description"]:</FieldLabel>
+            <TextEdit @bind-Text="@AppModelObject.SkuModelDtoObject.Description">
+                <Feedback>
+                    <ValidationError>Description is Required</ValidationError>
                 </Feedback>
             </TextEdit>
         </Field>
@@ -39,4 +50,17 @@
 
 @code {
     Validations? validations;
+
+    void ValidateSku(ValidatorEventArgs e)
+    {
+        var sku = Convert.ToString(e.Value);
+        if (sku.Length < 2)
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
 }

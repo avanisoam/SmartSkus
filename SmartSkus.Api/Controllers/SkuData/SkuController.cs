@@ -59,64 +59,161 @@ namespace SmartSkus.Api.Controllers.SkuData
                 return BadRequest("Please Add the items list properly");
             }
 
-            // TODO: Check if Item already exits
-
-            string newSku = "";
-
-            if (!string.IsNullOrWhiteSpace(skuModel.ItemName) && skuModel.ItemName.Length >= 2)
+            if (!skuModel.GenerateSku.IsNullOrEmpty())
             {
-                newSku = skuModel.ItemName.Substring(0, 2);
+                var splitSku = skuModel.GenerateSku.Split('-');
+
+                if (splitSku.Length != 4)
+                {
+                    for (int i = splitSku.Length; i < 4; i++)
+                    {
+                        skuModel.GenerateSku = skuModel.GenerateSku + "-00";
+                    }
+                }
+
+                bool skuExists = _repository.FindSku(skuModel.GenerateSku);
+
+                if (skuExists)
+                {
+                    skuModel = _repository.UpdateInventory(skuModel.GenerateSku, (long)skuModel.Quantity);
+
+                    _repository.SaveChanges();
+
+                    return Ok(skuModel);
+                }
+                else
+                {
+                    _repository.AddInventory(skuModel.GenerateSku, skuModel.Description, (long)skuModel.Quantity);
+
+                    _repository.SaveChanges();
+
+                    var inventoryModel = _repository.GetVariationBySkuNumber(skuModel.GenerateSku);
+
+                    var splitSkuNumber = inventoryModel.SKUNumber.Split('-');
+
+                    skuModel.ItemName = splitSkuNumber[0];
+                    skuModel.Attribute1 = splitSkuNumber[1];
+                    skuModel.Attribute2 = splitSkuNumber[2];
+                    skuModel.Attribute3 = splitSkuNumber[3];
+
+                    skuModel.Item = inventoryModel.Item;
+
+                    _repo.AddItemsToInventory(skuModel);
+                    _repo.SaveChanges();
+
+                    var newSkuModel = _repo.GetSkuById(skuModel.Id);
+
+                    return CreatedAtRoute(routeName: "GetById", routeValues: new { Id = newSkuModel.Id }, newSkuModel);
+                }
             }
-
-            if (!string.IsNullOrWhiteSpace(skuModel.Attribute1) && skuModel.Attribute1.Length >= 2)
+            else
             {
-                newSku = string.Format("{0}-{1}", newSku, skuModel.Attribute1.Substring(0, 2));
-            }
+                string newSku = "";
 
-            if (!string.IsNullOrWhiteSpace(skuModel.Attribute2) && skuModel.Attribute2.Length >= 2)
-            {
-                newSku = string.Format("{0}-{1}", newSku, skuModel.Attribute2.Substring(0, 2));
-            }
+                if (!string.IsNullOrWhiteSpace(skuModel.ItemName) && skuModel.ItemName.Length >= 2)
+                {
+                    newSku = skuModel.ItemName.Substring(0, 2);
+                }
 
-            if (!string.IsNullOrWhiteSpace(skuModel.Attribute3) && skuModel.Attribute3.Length >= 2)
-            {
-                newSku = string.Format("{0}-{1}", newSku, skuModel.Attribute3.Substring(0, 2));
-            }
+                if (!string.IsNullOrWhiteSpace(skuModel.Attribute1) && skuModel.Attribute1.Length >= 2)
+                {
+                    newSku = string.Format("{0}-{1}", newSku, skuModel.Attribute1.Substring(0, 2));
+                }
 
-            //skuModel.GenerateSku = string.Concat(skuModel.ItemName.Substring(0, 2) + "-" + skuModel.Attribute1.Substring(0, 2) + "-" + skuModel.Attribute2.Substring(0, 2) + "-" + skuModel.Attribute3.Substring(0, 2));
+                if (!string.IsNullOrWhiteSpace(skuModel.Attribute2) && skuModel.Attribute2.Length >= 2)
+                {
+                    newSku = string.Format("{0}-{1}", newSku, skuModel.Attribute2.Substring(0, 2));
+                }
 
-            if(skuModel.GenerateSku.IsNullOrEmpty())
-            {
+                if (!string.IsNullOrWhiteSpace(skuModel.Attribute3) && skuModel.Attribute3.Length >= 2)
+                {
+                    newSku = string.Format("{0}-{1}", newSku, skuModel.Attribute3.Substring(0, 2));
+                }
+
+                //skuModel.GenerateSku = string.Concat(skuModel.ItemName.Substring(0, 2) + "-" + skuModel.Attribute1.Substring(0, 2) + "-" + skuModel.Attribute2.Substring(0, 2) + "-" + skuModel.Attribute3.Substring(0, 2));
+
+                //if (skuModel.GenerateSku.IsNullOrEmpty())
+                //{
+                //    skuModel.GenerateSku = newSku;
+                //}
                 skuModel.GenerateSku = newSku;
+
+                var splitSku = skuModel.GenerateSku.Split('-');
+
+                if (splitSku.Length != 4)
+                {
+                    for (int i = splitSku.Length; i < 4; i++)
+                    {
+                        skuModel.GenerateSku = skuModel.GenerateSku + "-00";
+                    }
+                }
+
+                bool skuExists = _repository.FindSku(skuModel.GenerateSku);
+
+                if (skuExists)
+                {
+                    skuModel = _repository.UpdateInventory(skuModel.GenerateSku, (long)skuModel.Quantity);
+
+                    _repository.SaveChanges();
+
+                    return Ok(skuModel);
+                }
+                else
+                {
+                    _repository.AddInventory(skuModel.GenerateSku, skuModel.Description, (long)skuModel.Quantity);
+
+                    _repository.SaveChanges();
+
+                    var inventoryModel = _repository.GetVariationBySkuNumber(skuModel.GenerateSku);
+
+                    skuModel.Item = inventoryModel.Item;
+
+                    _repo.AddItemsToInventory(skuModel);
+                    _repo.SaveChanges();
+
+                    var newSkuModel = _repo.GetSkuById(skuModel.Id);
+
+                    return CreatedAtRoute(routeName: "GetById", routeValues: new { Id = newSkuModel.Id }, newSkuModel);
+
+                }
+                // TODO: Check if Item already exits
             }
+               
 
-            bool skuExists = _repository.FindSku(skuModel.GenerateSku);
+            //bool skuExists = _repository.FindSku(skuModel.GenerateSku);
 
-            if (skuExists)
-            {
-               skuModel =  _repository.UpdateInventory(skuModel.GenerateSku, (long)skuModel.Quantity);
+            //if (skuExists)
+            //{
+            //   skuModel =  _repository.UpdateInventory(skuModel.GenerateSku, (long)skuModel.Quantity);
 
-                _repository.SaveChanges();
+            //    _repository.SaveChanges();
 
-                return Ok(skuModel);
-            }
-            else 
-            {
-                _repository.AddInventory(skuModel.GenerateSku, skuModel.Description, (long)skuModel.Quantity);
+            //    return Ok(skuModel);
+            //}
+            //else 
+            //{
+            //    _repository.AddInventory(skuModel.GenerateSku, skuModel.Description, (long)skuModel.Quantity);
 
-                _repository.SaveChanges();
+            //    _repository.SaveChanges();
 
-                var inventoryModel = _repository.GetVariationBySkuNumber(skuModel.GenerateSku);
+            //    var inventoryModel = _repository.GetVariationBySkuNumber(skuModel.GenerateSku);
 
-                skuModel.Item = inventoryModel.Item;
+            //    var splitSkuNumber = inventoryModel.SKUNumber.Split('-');
 
-                _repo.AddItemsToInventory(skuModel);
-                _repo.SaveChanges();
+            //    skuModel.ItemName = splitSkuNumber[0];
+            //    skuModel.Attribute1 = splitSkuNumber[1];
+            //    skuModel.Attribute2 = splitSkuNumber[2];
+            //    skuModel.Attribute3 = splitSkuNumber[3];
 
-                var newSkuModel = _repo.GetSkuById(skuModel.Id);
+            //    skuModel.Item = inventoryModel.Item;
 
-                return CreatedAtRoute(routeName: "GetById", routeValues: new { Id = newSkuModel.Id }, newSkuModel);
-            }
+            //    _repo.AddItemsToInventory(skuModel);
+            //    _repo.SaveChanges();
+
+            //    var newSkuModel = _repo.GetSkuById(skuModel.Id);
+
+            //    return CreatedAtRoute(routeName: "GetById", routeValues: new { Id = newSkuModel.Id }, newSkuModel);
+            //}
         }
 
         [HttpDelete("{id}")]

@@ -16,13 +16,40 @@ namespace SmartSkus.Api.Data.Repo
         {
             _context = context;
         }
+
+        private bool Validate(string Sku)
+        {
+            if (Sku.Length != 11)
+            {
+                return false;
+            }
+
+            string[] words = Sku.Split('-');
+
+            if (words.Length != 4)
+            {
+                return false;
+            }
+
+            foreach (string word in words)
+            {
+                if (word.Length != 2)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
         public void AddInventory(string sku, string description, long quantity)
         {
+            //Validate(sku);
+
             var item = new Item
             {
                 ItemCode = sku,
-                Name = string.Format("Name: {0}", sku),
-                Description = string.Format("Item: {0}", description),
+                Name = sku,//string.Format("Name: {0}", sku),
+                Description = description,//string.Format("Item: {0}", description),
                 Region = Region.Africa,
             };
 
@@ -43,7 +70,7 @@ namespace SmartSkus.Api.Data.Repo
                 var variation = new ItemVariation
                 {
                     SKUNumber = sku,
-                    Description = string.Format("Variation: {0}", description),
+                    Description = description,//string.Format("Variation: {0}", description),
                     Price = 0, // Set Deafult price to 0
                     Quantity = quantity,
                     Item = item
@@ -91,7 +118,7 @@ namespace SmartSkus.Api.Data.Repo
             return skuModel;
         }
 
-        public void AddBulkSkus(string sku, List<int> optionKeyIds, int categoryId)
+        public void AddBulkSkus(string sku, List<int> optionKeyIds, int categoryId,string description)
         {
             string Attribute1 = string.Empty;
             string Attribute2 = string.Empty;
@@ -123,8 +150,8 @@ namespace SmartSkus.Api.Data.Repo
             var item = new Item
             {
                 ItemCode = sku,
-                Name = string.Format("Name: {0}", sku),
-                Description = string.Format("Item: {0} - Default description value", sku),
+                Name = sku,//string.Format("Name: {0}", sku),
+                Description = description,//string.Format("Item: {0} - Default description value", sku),
                 CategoryID = categoryId,
                 Region = Region.Africa,
             };
@@ -146,12 +173,29 @@ namespace SmartSkus.Api.Data.Repo
 
             Dictionary<string, List<long>> uniqueSkus_len_2 = Utilities.GetAllUniqueSKUs(keyValuePairs, 2, splitChar);
 
+            if (!string.IsNullOrWhiteSpace(sku) && sku.Length >= 2)
+            {
+                sku = sku.Substring(0, 2);
+            }
+
             foreach (var s in uniqueSkus_len_2)
             {
+                var tempSKUNumber = string.Format("{0}{1}{2}", sku, splitChar, s.Key);
+
+                var splitSku = tempSKUNumber.Split('-');
+
+                if (splitSku.Length != 4)
+                {
+                    for (int i = splitSku.Length; i < 4; i++)
+                    {
+                        tempSKUNumber = tempSKUNumber + "-00";
+                    }
+                }
+
                 var variation = new ItemVariation
                 {
                     Description = string.Empty,
-                    SKUNumber = string.Format("{0}{1}{2}", sku, splitChar, s.Key),
+                    SKUNumber = tempSKUNumber,//string.Format("{0}{1}{2}", sku, splitChar, s.Key),
                     Price = 0, // Set Deafult price to 0
                     Quantity = 0, // Set Deafult Quantity to 0 in case of bulk add
                     Item = item
@@ -170,16 +214,16 @@ namespace SmartSkus.Api.Data.Repo
                     _context.OptionVariations.Add(optionVariation);
                 }
 
-                var zohoItem = new SkuModel
+                var smartSkuItem = new SkuModel
                 {
                     ItemName = sku,
                     Attribute1 = Attribute1,
                     Attribute2 = Attribute2,
                     Attribute3 = Attribute3,
-                    GenerateSku = string.Format("{0}{1}{2}", sku, splitChar, s.Key),
+                    GenerateSku = tempSKUNumber,//string.Format("{0}{1}{2}", sku, splitChar, s.Key),
                     Item = item
                 };
-                _context.skuModels.Add(zohoItem);
+                _context.skuModels.Add(smartSkuItem);
             }
 
             _context.SaveChanges();
@@ -232,7 +276,7 @@ namespace SmartSkus.Api.Data.Repo
             //                     .ToList<ItemVariation>();
 
             var result = (from s in _context.ItemVariations                           
-                           select s).ToList();
+                           select s).OrderBy(x => x.ItemVariationID).ToList();
 
             return result;
         }

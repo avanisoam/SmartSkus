@@ -131,8 +131,8 @@ namespace SmartSkus.Api.Data
             var item = new Item
             {
                 // ItemID - Autogenrated
-                ItemCode = "T-SH",
-                Name = "T-Shirt",
+                ItemCode = "T0-SH",
+                Name = "T0-Shirt",
                 Description = "Default Item Description",
                 Category = apperalCategory,
                 Region = (Models.Region?)Region.Africa
@@ -180,12 +180,22 @@ namespace SmartSkus.Api.Data
 
             foreach (var s in uniqueSKUs)
             {
+                string newSku = item.ItemCode + "-" + s.Key;
+                var splitSku = newSku.Split('-');
+                if(splitSku.Length != 4)
+                {
+                    for(int i = splitSku.Length;i<4 ; i++)
+                    {
+                        newSku = newSku + "-00";
+                    }
+                }
+
                 var variation = new ItemVariation
                 {
                     // VariationID - Autogenrated
                     // Description = "Variation - Default Description",//String.Empty,
                     Description = "Variation - " + s.Key, 
-                    SKUNumber = item.ItemCode + "-" + s.Key,
+                    SKUNumber = newSku,//item.ItemCode + "-" + s.Key,
                     Price = 0,
                     Quantity = 10,
                     Item = item
@@ -207,14 +217,16 @@ namespace SmartSkus.Api.Data
                     context.OptionVariations.Add(optionVariation);
                 }
 
+                var splitSkuAttribute = newSku.Split('-');
+
                 var skuModel = new SkuModel
                 {
                     ItemName = item.Name,
-                    Attribute1 = "Type",//item.ItemCode,//"Type",
-                    Attribute2 = "Size",//sizeOptionKey,//"Size",
-                    Attribute3 = "",//optionValueName,
+                    Attribute1 = splitSkuAttribute[1],//"Type",//item.ItemCode,//"Type",
+                    Attribute2 = splitSkuAttribute[2],//"Size",//sizeOptionKey,//"Size",
+                    Attribute3 = splitSkuAttribute[3],//"",//optionValueName,
                     //GenerateSku = variation.SKUNumber,//item.ItemCode + "-" + s.Key,
-                    GenerateSku = item.ItemCode + "-" + s.Key,
+                    GenerateSku = newSku,//item.ItemCode + "-" + s.Key,
                     Item = item,
                     Description = "Seed Data",
                     Quantity = 1

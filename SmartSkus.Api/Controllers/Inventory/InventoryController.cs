@@ -58,7 +58,7 @@ namespace SmartSkus.Api.Controllers.Inventory
         [HttpPost]
         public ActionResult AddBulkSkus(MasterDataRequestModel inventory)
         {
-            _repository.AddBulkSkus(inventory.SKU, inventory.OptionKeyIds, inventory.CategoryId);
+            _repository.AddBulkSkus(inventory.SKU, inventory.OptionKeyIds, inventory.CategoryId,inventory.Description);
             _repository.SaveChanges();
 
             return Ok();

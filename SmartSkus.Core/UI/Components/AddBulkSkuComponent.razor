@@ -2,12 +2,12 @@
 @using SmartSkus.Shared.Dtos;
 
 <Validations @ref="validations" Mode="ValidationMode.Manual">
-    <Validation Validator="@ValidationRule.IsNotEmpty">
+    <Validation Validator="ValidateSku">
         <Field Margin=Margin.Is0.Is2.FromTop>
             <FieldLabel Margin=Margin.Is0>@Localizer["Item Name"]:</FieldLabel>
             <TextEdit @bind-Text="@AppModelObject.BulkAddDtoObject.SKU">
                 <Feedback>
-                    <ValidationError>Item Name is Required</ValidationError>
+                    <ValidationError>Item Name should more than 2 characters.</ValidationError>
                 </Feedback>
             </TextEdit>
         </Field>
@@ -172,6 +172,19 @@
     void ValidateQuantity(ValidatorEventArgs e)
     {
         if ((int)e.Value <= 0)
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+
+    void ValidateSku(ValidatorEventArgs e)
+    {
+        var sku = Convert.ToString(e.Value);
+        if (sku.Length < 2)
         {
             e.Status = ValidationStatus.Error;
         }

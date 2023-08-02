@@ -15,7 +15,7 @@ namespace SmartSkus.Api.Data.Interface
         /// <summary>
         ///  Add Bulk SKUs based on Item code & Options
         /// </summary>
-        void AddBulkSkus(string sku, List<int> optionKeyIds, int categoryId);
+        void AddBulkSkus(string sku, List<int> optionKeyIds, int categoryId,string description);
 
 
         void RemoveQuantity(string skuNumber, long quantity);

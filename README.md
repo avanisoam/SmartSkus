@@ -222,3 +222,7 @@ SKU numbers are important because they ensure your inventory is accurately track
 #### Can set the look and feel and language etc. :
 
 ![LeftUpperSetting](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/LeftOptions.PNG)
+
+### DB Diagram :
+
+![DbDiagram](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/Dbml.PNG)

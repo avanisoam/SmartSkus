@@ -27,12 +27,46 @@ SKU numbers are important because they ensure your inventory is accurately track
  * User can add new item in inventory by providing SKU, Description and Quantity.
  * If user adds unknown SKU, it will create new item in inventory.
  * If user adds known SKU, it will add the quantity to existing item in inventory.
- * If user adds negetive quantity with known SKU, it will substract the quantity to existing item in inventory. 
+ * If user adds negetive quantity with known SKU, it will substract the quantity to existing item in inventory.
+
+#### Dashboard :
+
+![Dashboard](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/DefaultMainPage.PNG)
+
+#### Inventory Management Form (User can add new item in inventory by providing SKU, Description and Quantity):
+
+![InventoryManagementForm](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/InventoryManagementForm.PNG)
+
+#### Result :
+
+![InventoryItemAddUsingSKU](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/InventoryItemAdd.PNG)
+
 
 ### SKU Management - Dashboard displays all unique Sku's in inventory and their variations:
  
  * User can manually add new Item by specifying one or more attributes, whose Sku will be generated automatically.
- * User can add bulk items by specifying item name and selecting preconfigured variations, whose Skus will be generated automatically.
+ * User can add bulk items by specifying item name and selecting preconfigured options, whose Skus will be generated automatically.
+
+#### Add Single Item in Inventory and SKU will be generated automatically along with QR-Code.
+
+![ManualAddForm](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/ManualAddForm.PNG)
+
+#### Result :
+
+![ManualAddResult](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/ManualItemAdd.PNG)
+
+#### Add Bulk Items in Inventory and SKUs will be generated automatically along with QR-Codes.
+
+![BulkAddForm](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/BulkAddForm.PNG)
+
+#### Result :
+
+![BulkAddResult](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/BulkAddItem.PNG)
+
+
+### Available Items in the Inventory Can be Viewed All or Seperately using following buttons in left panel :
+
+![AvailableItemsPanel](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/SeeAllOrParticular.PNG)
 
 ### Admin Panel - After Login user can manage Master Data:
 
@@ -40,6 +74,39 @@ SKU numbers are important because they ensure your inventory is accurately track
  * Admin User can divide the items in inventory by adding different Categories.(e.g - Apperals, Electronics etc.)
  * For Each defined category different sub-options, can be added.(e.g - T-Shirt(Item Name), Apperal(Category), Size(Option Key), Small,Medium,Large(Option Values).
  * Admin User can manage(perform CRUD operations) all categories and sub options.
+
+
+# Admin Panel
+
+### AdminInventory:
+
+#### Admin User can Add, Update, Delete, View items in Inventory using this panel:
+
+![AdminInventory](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/Admin%20Inventory.PNG)
+
+### Admin Category:
+
+#### Admin User can add Categories to divide Inventory items into.
+
+![AdminCategory](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminCategory.PNG)
+
+#### The Categories can futher select sub categories options from here:
+
+![CategoryView](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminCategoryView.PNG)
+
+### Admin Options
+
+#### The options selected under Category View button can be managed from AdminOptions:
+
+![AdminOptions](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminOptions.PNG)
+
+#### These Options can have multiple sub options:
+
+![AdminSubOptions](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminOptionsSubOptions.PNG)
+
+### Admin Settings
+
+![AdminSettings](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminSettings.PNG)
 
 ### QR Code
  * Each item in the Inventory has its own QR-Code so that item can be identified by scanning the QR-Code.
@@ -50,6 +117,10 @@ SKU numbers are important because they ensure your inventory is accurately track
 
  * JSON export
  * YAML export
+
+#### Download
+
+![Export](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/JsonYamlExport.PNG)
 
 # Themes
 
@@ -133,54 +204,10 @@ SKU numbers are important because they ensure your inventory is accurately track
 * WebView2
 * YamlDotNet
 
-  ### Languages
+### Languages
 
   * English
   * Hindi
-
-### How it Works:
-
-There are three ways by which items can be added in Inventory.
- 1. By adding Sku, Description and Quantity.
- 2. Manual Entry or One Item at a time entry and Sku is generated automatically.
- 3. Bulk Items Entry and Skus are generated automatically.
- 4. 
-
-# Admin Panel
-
-### AdminInventory:
-
-#### Admin User can Add, Update, Delete, View items in Inventory using this panel:
-
-![AdminInventory](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/Admin%20Inventory.PNG)
-
-### Admin Category:
-
-#### Admin User can add Categories to divide Inventory items into.
-
-![AdminCategory](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminCategory.PNG)
-
-#### The Categories can futher select sub categories options from here:
-
-![CategoryView](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminCategoryView.PNG)
-
-### Admin Options
-
-#### The options selected under Category View button can be managed from AdminOptions:
-
-![AdminOptions](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminOptions.PNG)
-
-#### These Options can have multiple sub options:
-
-![AdminSubOptions](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminOptionsSubOptions.PNG)
-
-### Download
-
-![Export](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/JsonYamlExport.PNG)
-
-### Admin Settings
-
-![AdminSettings](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/AdminSettings.PNG)
 
 ### Help 
 

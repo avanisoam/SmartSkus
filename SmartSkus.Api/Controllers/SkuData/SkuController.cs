@@ -61,6 +61,7 @@ namespace SmartSkus.Api.Controllers.SkuData
 
             if (!skuModel.GenerateSku.IsNullOrEmpty())
             {
+                skuModel.GenerateSku = skuModel.GenerateSku.ToUpper();
                 var splitSku = skuModel.GenerateSku.Split('-');
 
                 if (splitSku.Length != 4)
@@ -136,7 +137,7 @@ namespace SmartSkus.Api.Controllers.SkuData
                 //{
                 //    skuModel.GenerateSku = newSku;
                 //}
-                skuModel.GenerateSku = newSku;
+                skuModel.GenerateSku = newSku.ToUpper();
 
                 var splitSku = skuModel.GenerateSku.Split('-');
 

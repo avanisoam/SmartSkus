@@ -175,7 +175,7 @@ namespace SmartSkus.Api.Data.Repo
 
             if (!string.IsNullOrWhiteSpace(sku) && sku.Length >= 2)
             {
-                sku = sku.Substring(0, 2);
+                sku = sku.Substring(0, 2).ToUpper();
             }
 
             foreach (var s in uniqueSkus_len_2)
@@ -194,7 +194,7 @@ namespace SmartSkus.Api.Data.Repo
 
                 var variation = new ItemVariation
                 {
-                    Description = string.Empty,
+                    Description = description,
                     SKUNumber = tempSKUNumber,//string.Format("{0}{1}{2}", sku, splitChar, s.Key),
                     Price = 0, // Set Deafult price to 0
                     Quantity = 0, // Set Deafult Quantity to 0 in case of bulk add
@@ -221,7 +221,8 @@ namespace SmartSkus.Api.Data.Repo
                     Attribute2 = Attribute2,
                     Attribute3 = Attribute3,
                     GenerateSku = tempSKUNumber,//string.Format("{0}{1}{2}", sku, splitChar, s.Key),
-                    Item = item
+                    Item = item,
+                    Description = description
                 };
                 _context.skuModels.Add(smartSkuItem);
             }

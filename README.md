@@ -189,17 +189,12 @@ SKU numbers are important because they ensure your inventory is accurately track
 * Blazor
 * Blazorise
 * Bootstrap
-* MS Sql Db
+* EntityFramework Core
+* InMemory/MS Sql Db
 * REST API
 * GITHub Version Control
 * Bootswatch
-* CsvHelper
-* DnetIndexedDb
 * Font Awesome
-* Google Drive API
-* IndexedDB
-* Markdig
-* MAUI
 * WebAssembly
 * WebView2
 * YamlDotNet

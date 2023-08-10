@@ -31,11 +31,11 @@ namespace SmartSkus.Core.UI.Components.Admin
 
         public SettingsDto? editItem { get; set; }
 
-        public SettingsDto newSettingsObject { get; set; } = new(); 
+        public SettingsDto newSettingsObject { get; set; } = new();
 
-        #endregion
+		#endregion
 
-        protected override async Task OnInitializedAsync()
+		protected override async Task OnInitializedAsync()
         {
             settingsDtos = await SettingsService.GetAll();
         }
@@ -44,7 +44,8 @@ namespace SmartSkus.Core.UI.Components.Admin
         {
             Repository.Settings.Screen = Screen.Main;
             await Repository.UpdateSettings(Repository.Settings.Id);
-        }
+			
+		}
 
         public async Task AddItem()
         {

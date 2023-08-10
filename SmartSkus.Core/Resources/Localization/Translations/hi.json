@@ -9,7 +9,7 @@
     "Help": "मदद",
     "Json": "जेसन",
     "Markdown": "मार्कडाउन",
-   
+
     "Load examples": "लोड उदाहरण",
     "Delete all": "सब मिटाएँ",
     "Reset settings": "सेटिंग्स रीसेट करें",
@@ -50,7 +50,7 @@
     "Available Categories": "उपलब्ध श्रेणियाँ",
     "View All Categories": "सभी श्रेणियाँ देखें",
     "Category Name": "श्रेणी का नाम",
-    "Inventory": "भंडार",
+    "Inventory": "संपूर्ण वस्तुसूची",
     "SkuCategory": "एसकेयू श्रेणी",
     "Details": "विवरण",
     "SkuOptions": "एसकेयू विकल्प",
@@ -75,6 +75,14 @@
     "Add New OptionValue": "नया विकल्प जोड़ें",
     "Login": "लॉग इन",
     "Logout": "लॉग आउट",
-    "Cancel": "रद्द करें"
+    "Cancel": "रद्द करें",
+    "View All Items": "सभी आइटम देखें",
+    "Inventory List": "वस्तुसूची की फेहरिस्त",
+    "Items List": "आइटम सूची",
+    "Variations List": "विविधताओं की सूची",
+    "View All Inventory": "संपूर्ण वस्तुसूची देखें",
+    "Email": "ईमेल",
+    "Password": "पासवर्ड"
+
   }
 }

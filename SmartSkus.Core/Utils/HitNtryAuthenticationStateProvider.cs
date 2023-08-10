@@ -51,7 +51,7 @@ namespace SmartSkus.Core.UI.Utils
             if (tokenHandler.CanReadToken(_authenticationDataMemoryStorage.Token))
             {
                 var jwtSecurityToken = tokenHandler.ReadJwtToken(_authenticationDataMemoryStorage.Token);
-                identity = new ClaimsIdentity(jwtSecurityToken.Claims, "HitNtry");
+                identity = new ClaimsIdentity(jwtSecurityToken.Claims, "AdminSku");
             }
 
             var principal = new ClaimsPrincipal(identity);

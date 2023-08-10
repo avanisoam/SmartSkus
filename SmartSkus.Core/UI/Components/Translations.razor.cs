@@ -41,9 +41,7 @@ public partial class Translations
     readonly Dictionary<string, CultureInfo> _cultures = new()
     {
         { "English", new CultureInfo("en") },
-        { "Hindi", new CultureInfo("hi") },
-        { "Deutsch", new CultureInfo("de") },
-        { "slovenščina", new CultureInfo("sl") },
+        { "Hindi", new CultureInfo("hi") }
     }; 
 
     #endregion

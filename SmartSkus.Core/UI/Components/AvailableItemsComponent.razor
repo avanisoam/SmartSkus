@@ -16,7 +16,7 @@ else
         <Button Color=Color.Primary Size="Size" Block=true Margin=Margin.Is2.FromTop 
         @onclick="@(async () => await ClickId(item.ItemID))">
             @*@Localizer[$"ItemId -{item.ItemID} , Item Name - {@item.Name}"]*@
-            @Localizer[$"Item Name - {@item.Name}"]
+            @Localizer["Item Name"]- @item.Name
         </Button>
     }
 }

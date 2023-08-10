@@ -20,6 +20,12 @@ SKU numbers are important because they ensure your inventory is accurately track
  * To track the movement of each product from the time it enters the inventory until it is sold.
  * To pinpoint when to order new products, so your merchandise never goes out of stock.
 
+# How to Run the Project :
+
+* Open the project using Visual Studio
+* Right click on the Solution 'SmartSkus' -> Properties -> Multiple startup projects -> Select(Start) - SmarSkus.Api and SmartSkus.Wasm -> OK
+* Note: The database will automatically created upon run of the project, as InMemory Db is used in this project.
+
 # Features
 
 ### Inventory Management - Dashboard will display all items in Inventory with Sku, Description and quantity:
@@ -222,3 +228,7 @@ SKU numbers are important because they ensure your inventory is accurately track
 #### Can set the look and feel and language etc. :
 
 ![LeftUpperSetting](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/LeftOptions.PNG)
+
+### DB Diagram :
+
+![DbDiagram](https://github.com/avanisoam/SmartSkus/blob/master/SmartSkus.Shared/SmartSku-Screen%20Shots/Dbml.PNG)
